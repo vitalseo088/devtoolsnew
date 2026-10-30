@@ -1,0 +1,1609 @@
+develop a frontend only tools website name Dev27 using html tailwindcss vanilla js, center align logo And simple navigation bar below logo, heading and description in simple hero section no extra labels tags and buttons in this section ,
+below hero section add category wise tools cards linking to individual tool pages each page should have prerendered code seo optimized meta tags social media optimized ,
+use primary color #8A244B for icons buttons and links, #111F35 for navigation bar background, #F2EFE7 for highlights,
+use carrot red for red value and grass green for positive value.
+fonts google: Manrope (headings bold) regular for body text.
+elements border roundness 4px,
+single column boxed layout 960px max width fully responsive for mobile tables desktop devices.
+
+ONLINE TOOLS: Develop a collection of fully functional, reliable, browser-based online tools covering developer utilities, creator tools, ecommerce calculators, productivity tools, construction calculators, and pet name generators.
+
+The objective is to implement every tool as an independent, production-ready utility with accurate processing, meaningful outputs, proper input validation, error handling, and useful additional functionality.
+
+IMPORTANT:
+- Focus exclusively on the functionality of individual tools.
+- Do not develop an entire website, homepage, navigation, menus, global footer, or website-wide features.
+- Do not spend time defining visual design, colors, typography, styling, or layout.
+- Every tool must work independently.
+- Do not create demonstration-only interfaces or buttons that do nothing.
+- Do not use fake calculations, simulated conversions, or hardcoded outputs.
+- Use real algorithms and appropriate processing libraries.
+- Prefer client-side processing without requiring a server or database.
+- Use Web Workers for computationally intensive operations where appropriate.
+- Preserve user data locally only when necessary.
+- Provide useful explanations, formulas, and calculation breakdowns where applicable.
+
+---
+
+# 1. DEVELOPER TOOLS
+
+## 1.1 YAML to JSON Converter
+
+Develop a functional YAML-to-JSON converter.
+
+Features:
+- Accept YAML input through a multiline editor.
+- Convert YAML into valid JSON.
+- Support nested objects and arrays.
+- Support strings, numbers, booleans, null values, and multiline strings.
+- Support YAML anchors, aliases, and supported YAML data types.
+- Provide formatted and compact JSON output.
+- Allow indentation selection: 2 spaces, 4 spaces, or tabs.
+- Validate YAML syntax before conversion.
+- Display meaningful parsing errors with line and column information whenever available.
+- Copy converted JSON.
+- Download output as a .json file.
+- Clear input and output.
+- Load sample YAML.
+- Swap or reuse converted output as input where applicable.
+- Preserve Unicode characters.
+- Prevent invalid or unsafe YAML features from executing code.
+
+## 1.2 JSON to YAML Converter
+
+Develop a JSON-to-YAML conversion utility.
+
+Features:
+- Accept JSON input.
+- Parse and validate JSON.
+- Convert objects and arrays into YAML.
+- Support nested structures and all standard JSON data types.
+- Provide configurable indentation.
+- Support readable YAML output.
+- Handle special characters and strings requiring quotation marks.
+- Preserve Unicode characters.
+- Display detailed JSON parsing errors.
+- Copy YAML output.
+- Download as .yaml or .yml.
+- Clear and reset functionality.
+- Load sample JSON.
+- Support minified and formatted JSON input.
+
+## 1.3 JSON to CSV Converter
+
+Features:
+- Accept JSON arrays of objects.
+- Support nested JSON objects.
+- Flatten nested properties using configurable separators, such as dot notation.
+- Convert nested arrays into readable string representations or offer a configurable flattening strategy.
+- Automatically detect column headers.
+- Allow users to select which columns to export.
+- Support missing values and null values.
+- Handle commas, quotation marks, and line breaks correctly.
+- Support custom delimiters: comma, semicolon, tab, and pipe.
+- Include or exclude headers.
+- Support UTF-8 and BOM options for spreadsheet compatibility.
+- Preview CSV output.
+- Copy output.
+- Download as .csv.
+- Validate JSON before conversion.
+- Display useful error messages for invalid structures.
+
+## 1.4 CSV to JSON Converter
+
+Features:
+- Accept CSV through text input.
+- Support file uploads.
+- Automatically detect common delimiters.
+- Allow manual delimiter selection.
+- Detect headers.
+- Allow users to specify custom column names when headers are absent.
+- Convert rows into JSON objects.
+- Provide array-of-objects output.
+- Optionally detect numbers, booleans, and null values.
+- Preserve strings when automatic type detection is disabled.
+- Handle escaped quotation marks and multiline fields.
+- Handle empty cells and inconsistent row lengths.
+- Support large CSV files.
+- Preview parsed records.
+- Allow users to limit preview rows.
+- Copy JSON.
+- Download .json.
+- Provide meaningful parsing errors.
+
+## 1.5 Cron Expression Generator
+
+Develop a complete cron expression builder and validator.
+
+Features:
+- Support standard five-field cron expressions.
+- Include minute, hour, day of month, month, and day of week.
+- Allow selection of individual values, ranges, intervals, and multiple values.
+- Provide common scheduling presets:
+  - Every minute.
+  - Every 5 minutes.
+  - Every 15 minutes.
+  - Every 30 minutes.
+  - Every hour.
+  - Every day.
+  - Every weekday.
+  - Every week.
+  - Every month.
+  - Every year.
+- Generate cron expressions automatically.
+- Accept manually entered cron expressions.
+- Validate expression syntax.
+- Explain each field of the generated expression.
+- Display a human-readable schedule description.
+- Calculate and display the next 5, 10, or 20 execution times.
+- Allow timezone selection.
+- Handle day-of-month and day-of-week scheduling rules correctly.
+- Explain special characters such as *, /, -, and comma.
+- Support commonly used extensions only when explicitly identified.
+- Copy expression.
+- Reset configuration.
+
+## 1.6 Regex Tester
+
+Develop an interactive regular expression testing utility.
+
+Features:
+- Regex pattern input.
+- Test text input.
+- Support standard JavaScript regular expression syntax.
+- Regex flags: global, case-insensitive, multiline, dotAll, Unicode, and sticky where supported.
+- Display all matches.
+- Highlight matched text.
+- Show match indexes and positions.
+- Display capture groups.
+- Display named capture groups.
+- Support replacement testing.
+- Allow replacement string input.
+- Show original and replaced text.
+- Display match count.
+- Display regex syntax errors.
+- Provide common regex examples.
+- Include a regex explanation section for common tokens and constructs.
+- Include a test cases feature where users can test multiple strings.
+- Include copy functionality for patterns and results.
+- Protect against catastrophic backtracking by applying execution safeguards and limits.
+
+## 1.7 Unix Timestamp Converter
+
+Features:
+- Convert Unix timestamps into human-readable dates.
+- Convert dates into Unix timestamps.
+- Support seconds and milliseconds.
+- Automatically detect likely timestamp units while allowing manual selection.
+- Display UTC date and time.
+- Display local date and time.
+- Display ISO 8601 format.
+- Display common date formats.
+- Support 12-hour and 24-hour formats.
+- Support timezone selection.
+- Include current timestamp.
+- Support negative timestamps where valid.
+- Support decimal timestamps where appropriate.
+- Validate invalid and out-of-range dates.
+- Copy individual results.
+- Update live current time without requiring page reloads.
+
+## 1.8 SQL Formatter
+
+Develop a SQL formatting and validation utility.
+
+Features:
+- Accept SQL statements.
+- Format SQL into readable structured queries.
+- Support common SQL dialects:
+  - MySQL.
+  - PostgreSQL.
+  - SQLite.
+  - SQL Server.
+  - Standard SQL.
+- Configure indentation.
+- Configure keyword capitalization.
+- Configure line breaks.
+- Format SELECT, INSERT, UPDATE, DELETE, JOIN, WHERE, GROUP BY, ORDER BY, HAVING, subqueries, CTEs, and other supported SQL constructs.
+- Preserve string literals and comments.
+- Support multiple SQL statements.
+- Minify SQL.
+- Validate syntax when supported by the selected parser.
+- Provide meaningful errors.
+- Copy formatted SQL.
+- Download SQL file.
+- Never execute SQL against a database.
+
+## 1.9 PSD to PNG Converter
+
+Develop an actual PSD-to-PNG conversion utility.
+
+Features:
+- Accept PSD file uploads.
+- Read PSD document metadata.
+- Extract visible composite image.
+- Convert the document into PNG.
+- Preserve transparency where available.
+- Support large image dimensions within browser memory limits.
+- Preserve color information as accurately as the processing library allows.
+- Provide an option to export the merged visible image.
+- Support individual layer export if supported by the selected PSD parser.
+- Display file dimensions and output information.
+- Allow PNG download.
+- Handle unsupported PSD features and corrupted files.
+- Show meaningful processing errors.
+- Use an appropriate browser-compatible PSD parsing library.
+
+IMPORTANT: Do not simply rename PSD files to PNG. Perform genuine image decoding and conversion.
+
+## 1.10 DWG to PDF Converter
+
+Develop a genuine DWG-to-PDF conversion tool.
+
+Features:
+- Accept DWG uploads.
+- Detect file version and supported drawing features.
+- Read drawing entities and dimensions using a suitable CAD processing solution.
+- Support conversion of model space and available layouts.
+- Export drawing content into PDF.
+- Support page size selection.
+- Support portrait and landscape orientation.
+- Support scale selection.
+- Support monochrome and color output where supported.
+- Support line weights.
+- Support multiple layouts and sheets where supported.
+- Provide page previews where technically possible.
+- Allow PDF download.
+- Handle unsupported DWG versions, fonts, external references, and complex entities.
+- Explain limitations rather than generating incorrect output.
+
+IMPORTANT: DWG is a proprietary CAD format. Use a legitimate, reliable DWG-compatible conversion engine or service. Do not pretend that a browser-only library supports full DWG conversion if it does not.
+
+## 1.11 MP3 to MIDI Converter
+
+Develop an audio-to-MIDI transcription utility.
+
+Features:
+- Accept MP3 uploads.
+- Support audio preview and playback.
+- Extract audio using an appropriate decoding library.
+- Analyze pitch and frequency.
+- Detect musical notes.
+- Estimate note onset and duration.
+- Detect monophonic melodies.
+- Provide polyphonic transcription only when supported by the selected transcription engine.
+- Allow users to configure instrument assumptions.
+- Provide tempo estimation.
+- Allow manual tempo adjustment.
+- Detect approximate key and scale where supported.
+- Allow adjustment of note detection sensitivity.
+- Display detected notes in an editable piano-roll representation.
+- Allow users to correct detected notes.
+- Export generated MIDI.
+- Allow download of MIDI files.
+- Handle noisy recordings and unsupported audio formats.
+- Clearly communicate that automatic transcription may not perfectly reproduce complex music.
+
+IMPORTANT: Do not simply change an MP3 extension to MIDI. Implement actual audio analysis and MIDI event generation.
+
+## 1.12 STL to G-code Converter
+
+Develop an STL-to-G-code conversion utility for 3D printing.
+
+Features:
+- Upload STL files.
+- Parse and inspect 3D mesh geometry.
+- Validate mesh integrity.
+- Detect non-manifold geometry where possible.
+- Display model dimensions.
+- Support model scaling.
+- Support X, Y, and Z positioning.
+- Support model rotation.
+- Configure printer bed dimensions.
+- Configure nozzle diameter.
+- Configure filament diameter.
+- Configure layer height.
+- Configure print speed.
+- Configure travel speed.
+- Configure infill percentage.
+- Configure wall/perimeter count.
+- Configure top and bottom layers.
+- Configure print temperatures.
+- Configure support generation where supported.
+- Configure skirt, brim, and raft.
+- Select printer or firmware profile.
+- Generate slicing layers.
+- Generate actual toolpaths.
+- Export valid G-code.
+- Display estimated filament usage.
+- Estimate print time.
+- Estimate material weight.
+- Validate output against the selected printer profile.
+
+IMPORTANT: Use a genuine slicing engine or integrate a suitable slicer. Mesh-to-G-code conversion requires slicing and toolpath generation. Do not generate fake G-code by extracting STL coordinates.
+
+---
+
+# 2. CREATOR AND PODCAST TOOLS
+
+All name and content generators must generate results based on user-provided inputs rather than returning a fixed list.
+
+Use rule-based generation, configurable templates, word combinations, and optional AI integrations where available. If no AI service is configured, provide a genuinely functional local generation system.
+
+## 2.1 Podcast Name Generator
+
+Features:
+- Podcast topic or niche input.
+- Keywords input.
+- Podcast category selection.
+- Target audience selection.
+- Tone selection: professional, funny, educational, inspirational, casual, creative, or serious.
+- Short or long name preference.
+- Generate multiple unique name suggestions.
+- Generate different naming styles.
+- Allow exclusion of specific words.
+- Regenerate results.
+- Favorite names.
+- Copy individual names.
+- Copy all names.
+- Download results as TXT or CSV.
+- Check duplicate names within generated results.
+- Provide optional domain and social username availability checking through a configured service.
+
+## 2.2 Podcast Episode Title Generator
+
+Features:
+- Podcast topic input.
+- Episode summary input.
+- Main keywords input.
+- Target audience.
+- Episode number.
+- Tone selection.
+- Generate SEO-friendly episode titles.
+- Generate curiosity-driven titles.
+- Generate educational titles.
+- Generate interview titles.
+- Generate question-based titles.
+- Generate short and long title variations.
+- Allow keyword inclusion.
+- Allow exclusion of words.
+- Regenerate and save favorite titles.
+- Copy and download results.
+
+## 2.3 Podcast Description Generator
+
+Features:
+- Podcast name input.
+- Episode title input.
+- Episode topic.
+- Episode summary.
+- Guest name and biography.
+- Main keywords.
+- Target audience.
+- Tone selection.
+- Desired description length.
+- Generate podcast descriptions.
+- Generate short promotional summaries.
+- Generate detailed episode descriptions.
+- Include natural keyword placement.
+- Generate optional call-to-action text.
+- Generate optional timestamps section based on supplied timestamps.
+- Generate social media promotional descriptions.
+- Edit generated content.
+- Copy and download descriptions.
+
+## 2.4 Podcast Script Maker
+
+Features:
+- Podcast topic input.
+- Episode title.
+- Podcast format selection:
+  - Solo.
+  - Interview.
+  - Co-hosted.
+  - Educational.
+  - Storytelling.
+  - News commentary.
+- Number of hosts.
+- Target duration.
+- Target audience.
+- Tone and speaking style.
+- Main talking points.
+- Guest information.
+- Introduction generator.
+- Hook generator.
+- Main segment generator.
+- Question generator for interviews.
+- Transition generation.
+- Advertisement/sponsor section.
+- Call-to-action section.
+- Conclusion generator.
+- Generate complete structured scripts.
+- Calculate estimated speaking time based on word count and speaking rate.
+- Allow users to edit individual sections.
+- Regenerate individual sections.
+- Copy full script.
+- Download as TXT or DOCX if supported.
+
+## 2.5 TikTok Username Generator
+
+Features:
+- Name or keyword input.
+- Niche selection.
+- Personal or brand account selection.
+- Style selection: simple, catchy, aesthetic, funny, professional, gaming, or creative.
+- Include numbers option.
+- Include underscores and periods option.
+- Maximum username length.
+- Generate multiple username suggestions.
+- Check duplicates within generated results.
+- Allow custom prefix and suffix.
+- Copy and favorite results.
+- Optional username availability checking using a permitted external service.
+
+## 2.6 Instagram Username Generator
+
+Features:
+- Name input.
+- Brand or personal account.
+- Business niche.
+- Keywords.
+- Username style.
+- Short username preference.
+- Include numbers option.
+- Include underscores and periods option.
+- Prefix and suffix options.
+- Generate multiple suggestions.
+- Avoid unwanted terms.
+- Check duplicates.
+- Copy and favorite usernames.
+- Optional availability checking through a permitted service.
+
+## 2.7 YouTube Channel Name Generator
+
+Features:
+- Channel topic and niche.
+- Keywords.
+- Channel type.
+- Target audience.
+- Language.
+- Tone.
+- Brand style.
+- Generate channel name suggestions.
+- Generate short brandable names.
+- Generate descriptive names.
+- Generate educational and entertainment names.
+- Avoid specific words.
+- Generate name variations.
+- Copy and favorite names.
+- Optional domain and handle availability checking.
+
+## 2.8 YouTube Chapter Generator
+
+Features:
+- Accept video transcript or description.
+- Accept manually supplied timestamps.
+- Generate chapter titles from transcript sections.
+- Organize chapters chronologically.
+- Allow users to edit titles and timestamps.
+- Add, remove, and reorder chapters.
+- Validate timestamp format.
+- Ensure timestamps are in ascending order.
+- Generate YouTube-compatible timestamp output.
+- Include optional 00:00 introduction chapter.
+- Copy complete chapters.
+- Download TXT.
+- Provide a warning when timestamps do not meet YouTube chapter requirements.
+
+## 2.9 Twitch Panel Maker
+
+Features:
+- Enter panel title.
+- Enter panel description.
+- Add custom links.
+- Add social media links.
+- Add donation information.
+- Add streaming schedule.
+- Add rules and FAQ content.
+- Add About Me information.
+- Configure text and image content.
+- Support image uploads.
+- Generate downloadable panel images using canvas.
+- Support reusable panel templates.
+- Allow editing of panel content.
+- Support multiple panels in one project.
+- Validate image dimensions and file size.
+- Export individual panels as PNG.
+- Export all panels together as a ZIP where supported.
+
+## 2.10 Stream Schedule Maker
+
+Features:
+- Add streaming days.
+- Add start and end times.
+- Configure timezone.
+- Add platform information.
+- Add game or content category.
+- Support recurring weekly schedules.
+- Add special events.
+- Edit and delete schedule entries.
+- Detect overlapping time slots.
+- Convert schedule times between timezones.
+- Generate a weekly schedule.
+- Export schedule as PNG, PDF, CSV, or ICS where supported.
+- Copy schedule text.
+- Support 12-hour and 24-hour time formats.
+
+## 2.11 Band Name Generator
+
+Features:
+- Genre selection.
+- Keywords input.
+- Number of band members.
+- Mood selection.
+- Naming style.
+- Language preference.
+- Generate multiple band names.
+- Generate short and memorable names.
+- Generate abstract and creative names.
+- Include optional prefix/suffix.
+- Exclude specific words.
+- Check duplicates.
+- Save favorites.
+- Copy and download results.
+- Optional domain and social handle availability checking.
+
+## 2.12 Clan Name Generator
+
+Features:
+- Game type.
+- Clan category.
+- Keywords.
+- Preferred length.
+- Tone: competitive, aggressive, funny, mysterious, professional, or creative.
+- Language.
+- Special character options.
+- Generate clan names.
+- Generate clan tags.
+- Generate abbreviations.
+- Generate name variations.
+- Avoid unwanted words.
+- Check duplicate suggestions.
+- Copy and favorite results.
+
+## 2.13 Roblox Username Generator
+
+Features:
+- Keyword or preferred name input.
+- Username style selection.
+- Age-appropriate and family-friendly generation.
+- Maximum character length.
+- Numbers option.
+- Prefix and suffix options.
+- Random and keyword-based suggestions.
+- Generate multiple usernames.
+- Validate Roblox username character restrictions.
+- Reject invalid lengths and prohibited characters.
+- Check duplicate suggestions.
+- Copy and favorite names.
+- Optional availability checking through a permitted service.
+
+---
+
+# 3. SELLER AND ECOMMERCE TOOLS
+
+All financial calculators must use transparent formulas, clearly labeled inputs, configurable assumptions, and detailed calculation breakdowns.
+
+Use the correct fee structures for each platform and make fee rates configurable. Do not hardcode rates as permanently accurate because marketplace fees change.
+
+## 3.1 Etsy Profit Calculator
+
+Features:
+- Product selling price.
+- Product manufacturing or purchase cost.
+- Shipping charged to customer.
+- Actual shipping cost.
+- Packaging cost.
+- Etsy listing fee.
+- Transaction fee.
+- Payment processing fee.
+- Optional advertising fees.
+- Optional offsite ads fees.
+- Currency selection.
+- Number of items sold.
+- Calculate total revenue.
+- Calculate total marketplace fees.
+- Calculate total expenses.
+- Calculate profit per item.
+- Calculate total profit.
+- Calculate profit margin.
+- Calculate markup.
+- Calculate break-even selling price.
+- Allow fee rates to be edited.
+- Provide itemized fee breakdown.
+- Display all calculations.
+
+## 3.2 Amazon FBA Calculator
+
+Features:
+- Marketplace selection.
+- Product selling price.
+- Product cost.
+- Product dimensions.
+- Product weight.
+- Product category.
+- Fulfillment method: FBA or FBM.
+- Referral fee.
+- Fulfillment fee.
+- Storage fee.
+- Inbound shipping cost.
+- Preparation and labeling cost.
+- Advertising cost.
+- Returns allowance.
+- Other expenses.
+- Estimate FBA fees based on configured marketplace fee tables.
+- Calculate total revenue.
+- Calculate total expenses.
+- Calculate net profit.
+- Calculate profit margin.
+- Calculate ROI.
+- Compare FBA and FBM.
+- Calculate maximum product sourcing cost for a target margin.
+- Show itemized fee breakdown.
+- Clearly identify estimated versus confirmed fees.
+
+## 3.3 eBay Fee Calculator
+
+Features:
+- Selling price.
+- Product cost.
+- Shipping charged.
+- Actual shipping cost.
+- Product category.
+- Seller location and marketplace.
+- Final value fee.
+- Per-order fee.
+- Optional promoted listing fee.
+- Payment-related charges where applicable.
+- Packaging cost.
+- Other expenses.
+- Calculate total eBay fees.
+- Calculate net profit.
+- Calculate profit margin.
+- Calculate break-even selling price.
+- Support multiple items.
+- Allow fee percentages to be customized.
+- Show detailed fee breakdown.
+
+## 3.4 Shopify Profit Calculator
+
+Features:
+- Product selling price.
+- Product cost.
+- Shipping revenue.
+- Shipping expense.
+- Packaging cost.
+- Payment processing fee.
+- Shopify transaction fee where applicable.
+- Subscription allocation.
+- Marketing and advertising costs.
+- Discounts.
+- Refund allowance.
+- Taxes as configurable inputs.
+- Calculate gross revenue.
+- Calculate total costs.
+- Calculate net profit.
+- Calculate profit margin.
+- Calculate ROI.
+- Calculate break-even selling price.
+- Calculate profit for multiple orders.
+- Allow fee assumptions to be customized.
+
+## 3.5 Marketplace Fee Calculator
+
+Features:
+- Marketplace selection or custom marketplace.
+- Product selling price.
+- Product cost.
+- Marketplace commission.
+- Payment processing fee.
+- Fixed order fee.
+- Shipping fee.
+- Fulfillment fee.
+- Listing fee.
+- Advertising fee.
+- Packaging and miscellaneous expenses.
+- Custom fee configuration.
+- Calculate total marketplace charges.
+- Calculate net profit.
+- Calculate net margin.
+- Compare fee structures across multiple marketplaces.
+- Display a detailed comparison and fee breakdown.
+
+## 3.6 Product Pricing Calculator
+
+Features:
+- Product purchase or manufacturing cost.
+- Packaging cost.
+- Shipping cost.
+- Labor cost.
+- Overhead allocation.
+- Marketplace fees.
+- Payment processing fees.
+- Desired profit margin.
+- Desired markup.
+- Tax percentage.
+- Discount percentage.
+- Calculate recommended selling price.
+- Calculate profit per unit.
+- Calculate profit margin.
+- Calculate markup percentage.
+- Calculate discounted selling price.
+- Calculate profit after discount.
+- Calculate minimum acceptable price.
+- Support multiple pricing scenarios.
+- Explain the formulas used.
+
+## 3.7 Break-Even Sales Calculator
+
+Features:
+- Fixed costs.
+- Variable cost per unit.
+- Selling price per unit.
+- Optional additional revenue.
+- Calculate contribution margin per unit.
+- Calculate contribution margin ratio.
+- Calculate break-even units.
+- Calculate break-even revenue.
+- Calculate expected profit at a specified sales quantity.
+- Calculate sales quantity needed for a target profit.
+- Support multiple products where appropriate.
+- Display fixed cost, variable cost, and revenue breakdown.
+- Explain the break-even calculation.
+
+## 3.8 Wholesale Margin Calculator
+
+Features:
+- Manufacturing or purchase cost.
+- Wholesale selling price.
+- Suggested retail price.
+- Shipping and handling.
+- Packaging.
+- Additional expenses.
+- Desired wholesale margin.
+- Calculate wholesale profit.
+- Calculate wholesale margin percentage.
+- Calculate markup percentage.
+- Calculate retailer margin.
+- Calculate retailer markup.
+- Calculate suggested retail price.
+- Calculate minimum wholesale price.
+- Support bulk quantities and tiered pricing.
+- Compare multiple wholesale pricing scenarios.
+
+## 3.9 Deck Material Calculator
+
+Features:
+- Deck length.
+- Deck width.
+- Deck height.
+- Deck board width.
+- Board spacing.
+- Board length.
+- Board thickness.
+- Joist spacing.
+- Frame material dimensions.
+- Support post spacing.
+- Stair or railing options.
+- Waste percentage.
+- Calculate deck surface area.
+- Estimate deck board quantity.
+- Estimate joist quantity.
+- Estimate beams.
+- Estimate support posts.
+- Estimate screws and fasteners.
+- Estimate framing lumber.
+- Estimate railing materials.
+- Calculate total material requirements.
+- Calculate estimated material cost using user-entered prices.
+- Provide a complete material list.
+
+## 3.10 Twitch Bits to USD Converter
+
+Features:
+- Enter number of Twitch Bits.
+- Convert Bits to estimated USD value.
+- Calculate creator earnings.
+- Calculate platform-related deductions when applicable.
+- Support common Bits quantities.
+- Display approximate conversion rates.
+- Allow configurable earning assumptions.
+- Calculate multiple quantities.
+- Provide a reverse calculation from target USD to required Bits.
+- Clearly distinguish viewer purchase cost from creator payout.
+- Explain that actual purchase prices can vary by region and package.
+
+## 3.11 Tattoo Price Calculator
+
+Features:
+- Tattoo size.
+- Estimated session duration.
+- Hourly artist rate.
+- Minimum shop charge.
+- Tattoo complexity.
+- Color or black-and-gray selection.
+- Artist experience level.
+- Location-based cost adjustment as a user-configurable assumption.
+- Design preparation fee.
+- Deposit.
+- Additional session count.
+- Tip percentage.
+- Calculate estimated total tattoo cost.
+- Calculate estimated cost per session.
+- Calculate deposit amount.
+- Calculate remaining balance.
+- Compare hourly pricing with flat pricing.
+- Explain that estimates depend on the artist and studio.
+
+---
+
+# 4. PRODUCTIVITY AND GENERAL TOOLS
+
+## 4.1 Overtime Calculator
+
+Features:
+- Regular hourly wage.
+- Regular working hours.
+- Actual working hours.
+- Overtime multiplier.
+- Daily overtime threshold.
+- Weekly overtime threshold.
+- Optional double-time rate.
+- Number of workdays.
+- Currency selection.
+- Calculate regular pay.
+- Calculate overtime hours.
+- Calculate overtime pay.
+- Calculate double-time pay.
+- Calculate total gross pay.
+- Support daily and weekly overtime rules.
+- Allow manual overtime rules.
+- Provide itemized calculations.
+
+## 4.2 Freelance Rate Calculator
+
+Features:
+- Desired annual income.
+- Monthly business expenses.
+- Taxes and estimated deductions.
+- Savings target.
+- Desired profit.
+- Working weeks per year.
+- Working days per week.
+- Working hours per day.
+- Billable hours percentage.
+- Vacation and sick days.
+- Currency selection.
+- Calculate required hourly rate.
+- Calculate daily rate.
+- Calculate weekly rate.
+- Calculate monthly rate.
+- Calculate project-based rate.
+- Calculate minimum acceptable rate.
+- Display billable and non-billable time assumptions.
+- Allow scenario comparisons.
+
+## 4.3 Project Cost Calculator
+
+Features:
+- Project name.
+- Task and activity list.
+- Estimated hours per task.
+- Hourly labor rate.
+- Number of workers.
+- Material costs.
+- Equipment costs.
+- Software and subscription expenses.
+- External service costs.
+- Overhead.
+- Contingency percentage.
+- Taxes.
+- Add, edit, and remove tasks.
+- Calculate labor cost.
+- Calculate material cost.
+- Calculate total project cost.
+- Calculate cost per task.
+- Calculate contingency allowance.
+- Compare estimated and actual costs.
+- Export project estimates to CSV or PDF.
+
+## 4.4 Weekly Schedule Maker
+
+Features:
+- Create weekly schedules.
+- Select start and end dates.
+- Configure working days.
+- Add tasks and activities.
+- Set start and end times.
+- Set task priority.
+- Add notes.
+- Categorize activities.
+- Support recurring tasks.
+- Detect overlapping tasks.
+- Calculate total scheduled hours.
+- Calculate daily workload.
+- Edit and delete tasks.
+- Duplicate schedules.
+- Save and restore schedules locally.
+- Export schedule as CSV, PDF, or ICS.
+- Print schedule.
+
+## 4.5 Habit Tracker
+
+Features:
+- Create custom habits.
+- Set daily, weekly, or selected-day frequency.
+- Set habit goals.
+- Mark habits as completed or missed.
+- Track completion history.
+- Calculate daily and weekly completion rates.
+- Calculate current streak.
+- Calculate longest streak.
+- Display monthly progress.
+- Track multiple habits.
+- Add notes.
+- Edit and delete habits.
+- Reset tracking periods.
+- Save data using local storage or IndexedDB.
+- Export and import habit data.
+- Maintain data after page refresh.
+
+## 4.6 Goal Tracker
+
+Features:
+- Create personal or professional goals.
+- Goal title and description.
+- Start date and target completion date.
+- Define measurable targets.
+- Set milestones.
+- Set priority.
+- Categorize goals.
+- Update progress manually.
+- Track milestone completion.
+- Calculate percentage progress.
+- Display days remaining.
+- Identify overdue goals.
+- Record progress notes.
+- Edit, archive, and delete goals.
+- Save data locally.
+- Export and import goal data.
+
+## 4.7 Dead Pixel Test
+
+Features:
+- Full-screen display test.
+- Solid color test screens:
+  - Black.
+  - White.
+  - Red.
+  - Green.
+  - Blue.
+  - Cyan.
+  - Magenta.
+  - Yellow.
+  - Gray.
+- Brightness and dark-screen inspection.
+- Navigate between colors using keyboard and controls.
+- Enter and exit fullscreen mode.
+- Optional pixel grid.
+- Instructions for identifying stuck and dead pixels.
+- Support different screen resolutions.
+- Prevent accidental page interaction during fullscreen testing.
+- Explain that automatic browser-based detection cannot reliably identify every physical dead pixel.
+
+## 4.8 Screen Size Calculator
+
+Features:
+- Input diagonal screen size.
+- Input aspect ratio.
+- Calculate screen width.
+- Calculate screen height.
+- Calculate display area.
+- Support common aspect ratios:
+  - 16:9.
+  - 16:10.
+  - 21:9.
+  - 4:3.
+  - 3:2.
+  - 32:9.
+  - Custom ratio.
+- Support inches and centimeters.
+- Allow reverse calculation from width and height.
+- Display results in both metric and imperial units.
+
+## 4.9 Aspect Ratio Calculator
+
+Features:
+- Input width and height.
+- Calculate simplified aspect ratio.
+- Calculate equivalent dimensions.
+- Lock aspect ratio while editing dimensions.
+- Calculate missing width or height.
+- Support image, video, and custom dimensions.
+- Provide common aspect ratio presets.
+- Calculate resize dimensions.
+- Support percentage scaling.
+- Display original and resized dimensions.
+- Copy results.
+
+## 4.10 Pixels Per Inch Calculator
+
+Features:
+- Screen diagonal size.
+- Horizontal resolution.
+- Vertical resolution.
+- Calculate PPI.
+- Calculate total pixel count.
+- Calculate pixel density.
+- Calculate pixel pitch.
+- Support different measurement units.
+- Allow direct width and height inputs where applicable.
+- Compare multiple displays.
+- Display formula and calculation breakdown.
+
+## 4.11 Typing Speed Test
+
+Features:
+- Random typing passages.
+- Different passage lengths.
+- Beginner, intermediate, and advanced difficulty.
+- Configurable test duration: 15, 30, 60, 120 seconds, or custom.
+- Start timer on first keystroke.
+- Calculate gross WPM.
+- Calculate net WPM.
+- Calculate accuracy.
+- Count correct and incorrect characters.
+- Highlight typing errors.
+- Track backspaces.
+- Calculate consistency.
+- Show real-time progress.
+- Display final results.
+- Allow retesting.
+- Provide multiple test passages.
+- Store optional local history.
+
+## 4.12 Words Per Minute Test
+
+Features:
+- Allow users to paste or enter their own text.
+- Provide sample passages.
+- Input duration or start/end timing.
+- Count typed words.
+- Calculate gross WPM.
+- Calculate net WPM.
+- Calculate accuracy.
+- Calculate total characters.
+- Calculate errors.
+- Allow punctuation and capitalization settings.
+- Provide result summary.
+- Allow multiple attempts and comparison.
+
+## 4.13 Online Timer
+
+Features:
+- Set hours, minutes, and seconds.
+- Start, pause, resume, and reset.
+- Preset timer durations.
+- Countdown display.
+- Sound notification when completed.
+- Browser notification permission where available.
+- Optional custom alert sound.
+- Multiple independent timers.
+- Allow timer labels.
+- Continue accurate timing when the browser tab becomes inactive.
+- Use reliable time calculations rather than decrementing a counter inaccurately.
+- Handle browser background throttling.
+- Allow stopping and restarting timers.
+
+## 4.14 Pomodoro Timer
+
+Features:
+- Configure work duration.
+- Configure short break duration.
+- Configure long break duration.
+- Configure sessions before long break.
+- Start, pause, resume, and reset.
+- Automatically switch between work and break sessions.
+- Skip current session.
+- Display current session type.
+- Count completed work sessions.
+- Track total focus time.
+- Sound and browser notifications.
+- Daily focus statistics.
+- Allow custom session lengths.
+- Save preferences locally.
+- Handle inactive tabs accurately.
+
+## 4.15 Work Break Timer
+
+Features:
+- Set working duration.
+- Set break duration.
+- Configure repeated cycles.
+- Configure long breaks.
+- Start, pause, resume, and reset.
+- Automatic work/break transitions.
+- Custom notification sounds.
+- Browser notifications.
+- Display completed cycles.
+- Track total working time and break time.
+- Provide flexible work-rest presets.
+- Save settings locally.
+
+## 4.16 Work Hours Calculator
+
+Features:
+- Enter work start and end times.
+- Enter break start and end times.
+- Support multiple breaks.
+- Support overnight shifts.
+- Calculate total elapsed hours.
+- Calculate break duration.
+- Calculate net working hours.
+- Calculate overtime.
+- Calculate regular pay and overtime pay when hourly rate is provided.
+- Support multiple workdays.
+- Support 12-hour and 24-hour time formats.
+- Support decimal hours and hours/minutes output.
+- Export weekly timesheets.
+- Validate invalid time ranges.
+
+## 4.17 Color Palette Generator
+
+Features:
+- Generate color palettes.
+- Generate palettes from a selected base color.
+- Support HEX, RGB, and HSL input.
+- Generate complementary colors.
+- Generate analogous colors.
+- Generate triadic colors.
+- Generate split-complementary colors.
+- Generate tetradic palettes.
+- Generate monochromatic palettes.
+- Generate random palettes.
+- Adjust hue, saturation, and lightness.
+- Generate shades and tints.
+- Display HEX, RGB, and HSL values.
+- Copy individual colors.
+- Copy entire palettes.
+- Lock selected colors while regenerating the remaining palette.
+- Check text/background contrast ratios.
+- Display WCAG contrast compliance.
+- Export palettes as CSS variables, JSON, and PNG.
+- Allow users to save favorite palettes locally.
+
+---
+
+# 5. CONSTRUCTION CALCULATORS
+
+All construction calculators must use consistent measurement units, provide transparent formulas, support custom material dimensions, and include configurable waste allowances.
+
+Support metric and imperial units.
+
+## 5.1 Roof Pitch Calculator
+
+Features:
+- Roof rise input.
+- Roof run input.
+- Roof angle input.
+- Roof pitch ratio.
+- Roof slope percentage.
+- Calculate missing values.
+- Calculate roof angle in degrees.
+- Calculate roof pitch as X:12.
+- Calculate roof slope percentage.
+- Calculate rafter length.
+- Calculate roof surface length.
+- Support gable roof calculations.
+- Support common and custom units.
+- Provide calculation breakdown.
+- Validate zero and negative inputs.
+
+## 5.2 Stair Calculator
+
+Features:
+- Total floor-to-floor height.
+- Available horizontal stair run.
+- Desired riser height.
+- Desired tread depth.
+- Stair width.
+- Landing dimensions.
+- Calculate number of risers.
+- Calculate number of treads.
+- Calculate actual riser height.
+- Calculate tread depth.
+- Calculate total horizontal run.
+- Calculate stair angle.
+- Calculate stringer length.
+- Estimate material requirements.
+- Support straight staircases.
+- Provide a configurable safety and code-compliance reference range.
+- Warn when dimensions fall outside configured building-code limits.
+- Do not claim universal building-code compliance.
+
+## 5.3 Concrete Volume Calculator
+
+Features:
+- Concrete shape selection:
+  - Slab.
+  - Rectangle.
+  - Square.
+  - Circular slab.
+  - Footing.
+  - Column.
+  - Wall.
+  - Cylinder.
+  - Custom dimensions.
+- Length, width, height, and depth inputs.
+- Diameter and radius inputs where applicable.
+- Number of sections.
+- Calculate volume.
+- Convert cubic feet, cubic yards, and cubic meters.
+- Calculate concrete bag requirements using selected bag sizes.
+- Estimate material cost.
+- Add waste percentage.
+- Support multiple concrete sections.
+- Display total volume and material estimates.
+
+## 5.4 Deck Board Calculator
+
+Features:
+- Deck length.
+- Deck width.
+- Board width.
+- Board length.
+- Board thickness.
+- Board gap.
+- Board orientation.
+- Board arrangement.
+- Calculate deck area.
+- Calculate required board quantity.
+- Calculate board coverage.
+- Estimate board cuts.
+- Estimate waste.
+- Support multiple board sizes.
+- Calculate estimated board cost.
+- Allow custom waste percentage.
+- Provide a board quantity breakdown.
+
+## 5.5 Gravel Calculator
+
+Features:
+- Area length.
+- Area width.
+- Desired gravel depth.
+- Shape selection: rectangle, square, circle, or custom.
+- Number of areas.
+- Gravel density.
+- Material type.
+- Calculate area.
+- Calculate gravel volume.
+- Convert volume to cubic yards, cubic feet, and cubic meters.
+- Estimate weight in pounds, kilograms, and tons.
+- Add compaction and waste allowances.
+- Estimate number of bags.
+- Calculate total material cost.
+- Support multiple areas.
+
+## 5.6 Fence Material Calculator
+
+Features:
+- Total fence length.
+- Fence height.
+- Fence type.
+- Number of sides.
+- Gate count and gate widths.
+- Post spacing.
+- Picket or panel width.
+- Picket spacing.
+- Rail count.
+- Post dimensions.
+- Material prices.
+- Calculate total fence length.
+- Calculate number of posts.
+- Calculate panels or pickets.
+- Calculate rails.
+- Calculate concrete requirements for posts.
+- Estimate screws, nails, and fasteners.
+- Estimate total materials.
+- Calculate estimated cost.
+- Support wooden, vinyl, and other configurable fence systems.
+
+## 5.7 Drywall Calculator
+
+Features:
+- Wall height.
+- Wall length.
+- Number of walls.
+- Ceiling area.
+- Door and window dimensions.
+- Drywall sheet dimensions.
+- Sheet thickness.
+- Number of layers.
+- Waste percentage.
+- Calculate total wall area.
+- Calculate ceiling area.
+- Subtract doors and windows.
+- Calculate net drywall area.
+- Calculate required sheet quantity.
+- Estimate drywall screws.
+- Estimate joint tape.
+- Estimate joint compound.
+- Estimate corner bead.
+- Calculate material cost.
+- Support multiple rooms.
+
+## 5.8 Flooring Waste Calculator
+
+Features:
+- Room length.
+- Room width.
+- Room shape.
+- Multiple rooms.
+- Flooring material selection.
+- Plank or tile dimensions.
+- Installation pattern.
+- Waste percentage.
+- Doorway and unusable area deductions.
+- Calculate total floor area.
+- Calculate net coverage area.
+- Calculate material quantity.
+- Calculate number of boxes.
+- Account for package coverage.
+- Calculate total cost.
+- Compare different waste percentages.
+- Support straight, diagonal, and configurable installation patterns.
+
+---
+
+# 6. PETS AND ANIMALS NAME GENERATORS
+
+All name generators must generate varied and relevant names based on user inputs. Avoid repeatedly returning the same predefined results.
+
+Common functionality for all pet generators:
+- Pet name generation.
+- Pet gender selection: male, female, or unisex.
+- Breed or animal type input where relevant.
+- Personality selection.
+- Appearance or color selection.
+- Name length preference.
+- Naming style selection.
+- Theme selection.
+- Language selection.
+- First-letter filter.
+- Keyword inclusion.
+- Keyword exclusion.
+- Generate multiple names.
+- Regenerate suggestions.
+- Favorite names.
+- Copy individual names.
+- Copy all results.
+- Download names as TXT or CSV.
+- Check duplicates within the generated list.
+- Generate meanings and short explanations where reliable.
+
+## 6.1 Dog Name Generator
+
+Additional features:
+- Dog breed selection.
+- Dog size selection: small, medium, large, giant.
+- Personality: playful, loyal, energetic, calm, protective, friendly.
+- Coat color and appearance.
+- Traditional dog names.
+- Unique dog names.
+- Funny dog names.
+- Cute dog names.
+- Strong dog names.
+- Names by breed.
+- Short training-friendly name suggestions.
+
+## 6.2 Cat Name Generator
+
+Additional features:
+- Cat breed.
+- Fur color.
+- Eye color.
+- Personality.
+- Male, female, or unisex names.
+- Cute cat names.
+- Funny cat names.
+- Elegant cat names.
+- Unique cat names.
+- Food-inspired names.
+- Mythology-inspired names.
+- Color-based names.
+- Short and easy-to-call names.
+
+## 6.3 Puppy Name Generator
+
+Additional features:
+- Puppy breed.
+- Expected adult size.
+- Gender.
+- Coat color.
+- Personality.
+- Cute names.
+- Funny names.
+- Popular puppy names.
+- Unique names.
+- Short names.
+- Names suitable for training and recall.
+- Generate themed name collections.
+
+## 6.4 Kitten Name Generator
+
+Additional features:
+- Kitten gender.
+- Breed.
+- Fur color and pattern.
+- Personality.
+- Cute names.
+- Playful names.
+- Funny names.
+- Unique names.
+- Food-inspired names.
+- Cartoon-inspired naming themes.
+- Short names.
+- Names based on appearance.
+
+## 6.5 Horse Name Generator
+
+Additional features:
+- Horse breed.
+- Gender.
+- Coat color.
+- Discipline: racing, dressage, jumping, trail, western, leisure.
+- Personality.
+- Elegant names.
+- Strong names.
+- Racing-style names.
+- Mythological names.
+- Nature-inspired names.
+- Western-style names.
+- Short stable names.
+- Generate registered-name-style suggestions.
+- Validate character length against configurable naming restrictions.
+
+## 6.6 Rabbit Name Generator
+
+Additional features:
+- Rabbit breed.
+- Gender.
+- Fur color.
+- Size.
+- Personality.
+- Cute names.
+- Funny names.
+- Food-inspired names.
+- Nature-inspired names.
+- Unique names.
+- Short names.
+- Generate paired names for multiple rabbits.
+
+## 6.7 Bird Name Generator
+
+Additional features:
+- Bird species.
+- Gender.
+- Feather color.
+- Personality.
+- Talking ability preference.
+- Small or large bird.
+- Cute names.
+- Funny names.
+- Tropical names.
+- Nature-inspired names.
+- Color-based names.
+- Unique bird names.
+- Short and easy-to-pronounce suggestions.
+
+## 6.8 Fish Name Generator
+
+Additional features:
+- Fish species.
+- Gender where identifiable.
+- Fish color.
+- Freshwater or saltwater.
+- Personality or behavior.
+- Single fish or multiple fish.
+- Cute names.
+- Funny names.
+- Tropical names.
+- Color-based names.
+- Aquarium-themed names.
+- Paired fish names.
+- Names for groups or schools of fish.
+
+---
+
+# 7. SHARED FUNCTIONAL REQUIREMENTS
+
+These requirements apply to all relevant individual tools.
+
+## Input and validation
+- Validate all required fields.
+- Prevent calculations with invalid or impossible values.
+- Support sensible defaults where appropriate.
+- Display understandable validation errors.
+- Handle empty inputs.
+- Handle decimal numbers.
+- Prevent division by zero.
+- Validate dates, times, dimensions, file formats, and numerical ranges.
+- Support relevant metric and imperial units.
+
+## Results and outputs
+- Show accurate and clearly labeled results.
+- Include units with numerical values.
+- Provide calculation breakdowns for calculators.
+- Allow copying results.
+- Provide downloads where relevant.
+- Allow resetting individual tools.
+- Ensure exported files contain the actual generated results.
+
+## Local data persistence
+- Use localStorage or IndexedDB for tools requiring saved projects, habits, schedules, goals, favorites, or settings.
+- Provide data export and import when appropriate.
+- Do not require user registration.
+- Do not require a database for ordinary client-side utilities.
+
+## File processing
+- Validate file extension, MIME type, and file size.
+- Handle corrupted and unsupported files.
+- Display processing status.
+- Handle large files without freezing the main interface.
+- Use Web Workers where appropriate.
+- Release object URLs and processing resources when finished.
+- Do not upload private user files to external services without explicit disclosure and consent.
+
+## Accuracy and reliability
+- Use actual conversion algorithms and calculation formulas.
+- Never return hardcoded example results as real calculations.
+- Clearly identify estimated values.
+- Allow configurable fee rates, tax rates, material prices, and other assumptions.
+- Explain limitations for proprietary formats and complex processing.
+- Use tested libraries for complex file conversions.
+- Handle edge cases and rounding consistently.
+
+## Testing
+Create functional tests for each tool covering:
+- Normal inputs.
+- Minimum and maximum values.
+- Empty inputs.
+- Invalid inputs.
+- Decimal inputs.
+- Boundary conditions.
+- Large input datasets.
+- Different measurement units.
+- Calculation accuracy.
+- File conversion accuracy.
+- Export and download functionality.
+- Data persistence and recovery.
+
+## Final implementation requirement
+
+Implement all listed tools as separate functional modules. Keep each tool's processing logic independent and reusable.
+
+For every tool, provide:
+1. Complete input functionality.
+2. Complete processing or calculation logic.
+3. Input validation.
+4. Error handling.
+5. Accurate output generation.
+6. Copy, download, or export features where applicable.
+7. Reset and regenerate functionality where applicable.
+8. Edge-case handling.
+9. Functional tests.
+
+Do not leave any tool partially implemented. Do not use placeholder calculations, fake outputs, nonfunctional buttons, or simulated conversion processes.
+
+Prioritize correctness, reliability, browser compatibility, privacy, and actual usability over unnecessary complexity.

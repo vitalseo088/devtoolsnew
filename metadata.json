@@ -1,0 +1,6 @@
+{
+  "name": "Dev27 - Online Developer & Productivity Tools Suite",
+  "description": "Dev27 is a fast, reliable, client-side online tools suite covering developer utilities, creator tools, ecommerce calculators, productivity tools, construction calculators, and pet name generators.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
