@@ -81,7 +81,7 @@ export const ToolPageWrapper: React.FC<ToolPageWrapperProps> = ({ tool, onBack }
           <span className="text-slate-400">·</span>
           <span className="text-slate-600 font-mono text-xs sm:text-sm flex items-center gap-1">
             <ShieldCheck className="w-4 h-4 text-green-700" />
-            100% Client-Side Private
+            Private & In-Browser Execution
           </span>
         </div>
 

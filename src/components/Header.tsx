@@ -41,7 +41,7 @@ export const Header: React.FC<HeaderProps> = ({ currentCategory, onSelectCategor
             >
               All Tools (69)
             </button>
-            {CATEGORIES.map((cat) => (
+            {CATEGORIES.filter((cat) => cat.id !== 'construction').map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => onSelectCategory(cat.id)}

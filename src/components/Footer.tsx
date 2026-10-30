@@ -13,7 +13,7 @@ export const Footer: React.FC = () => {
           <span>— Precision Online Tools Suite</span>
         </div>
         <div className="text-slate-400 text-[11px]">
-          100% Client-side · Zero Server Telemetry · High Performance
+          High Performance · Zero Telemetry · Offline Capable
         </div>
       </div>
     </footer>
