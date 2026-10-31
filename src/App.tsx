@@ -91,40 +91,40 @@ export default function App() {
             {/* Category Wise Tools Cards Section */}
             <div className="app-container py-8">
               {/* Search and Category Filter Toolbar */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-6 p-4 bg-white card-dev27">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mb-8 p-5 bg-white card-dev27 shadow-md">
                 <div className="relative flex-1">
-                  <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Search className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search across all 69 online tools..."
-                    className="w-full pl-10 pr-3 py-2 text-sm border border-slate-200 rounded-[4px] bg-slate-50 focus:outline-none focus:border-[#8A244B]"
+                    className="w-full pl-12 pr-4 py-3 text-base border border-slate-300 rounded-[4px] bg-slate-50 focus:bg-white focus:outline-none focus:border-[#8A244B]"
                   />
                 </div>
 
-                <div className="text-sm text-slate-600 font-medium shrink-0">
-                  Showing <strong className="text-slate-900 font-bold">{filteredTools.length}</strong> of {TOOLS.length} utilities
+                <div className="text-base text-slate-600 font-semibold shrink-0">
+                  Showing <strong className="text-slate-900 font-extrabold">{filteredTools.length}</strong> of {TOOLS.length} utilities
                 </div>
               </div>
 
               {/* Grouped Category Sections */}
               {selectedCategory === 'all' && !searchQuery.trim() ? (
-                <div className="space-y-10">
+                <div className="space-y-12">
                   {CATEGORIES.map((cat) => {
                     const categoryTools = TOOLS.filter(t => t.category === cat.id);
                     return (
-                      <section key={cat.id} className="space-y-3.5">
-                        <div className="flex items-center justify-between border-b border-slate-200 pb-2.5">
+                      <section key={cat.id} className="space-y-4">
+                        <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                           <div>
-                            <h2 className="text-lg sm:text-xl font-extrabold text-[#111F35]">
+                            <h2 className="text-xl sm:text-2xl font-extrabold text-[#111F35]">
                               {cat.name}
                             </h2>
-                            <p className="text-sm text-slate-500 mt-0.5">
+                            <p className="text-base text-slate-500 mt-1">
                               {cat.description}
                             </p>
                           </div>
-                          <span className="text-xs sm:text-sm font-mono font-bold text-[#8A244B] bg-[#F2EFE7] px-2.5 py-1 rounded-[4px]">
+                          <span className="text-sm sm:text-base font-mono font-bold text-[#8A244B] bg-[#F2EFE7] px-3 py-1.5 rounded-[4px]">
                             {categoryTools.length} tools
                           </span>
                         </div>

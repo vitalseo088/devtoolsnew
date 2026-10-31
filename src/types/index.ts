@@ -23,4 +23,5 @@ export interface ToolDefinition {
   tags: string[];
   component: React.ComponentType;
   formulaOrInfo?: string;
+  seoArticle?: string;
 }
