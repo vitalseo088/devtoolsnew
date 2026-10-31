@@ -28,29 +28,84 @@ export const PricingBreakevenCalculator: React.FC<PricingProps> = ({ tool }) => 
   const [wholesalePrice, setWholesalePrice] = useState<number>(30.0);
   const [msrp, setMsrp] = useState<number>(60.0);
 
+  const [applied, setApplied] = useState({
+    materialCost,
+    laborCost,
+    shippingCost,
+    packagingCost,
+    overheadAlloc,
+    targetMarginPct,
+    discountPct,
+    salesTaxPct,
+    fixedMonthlyCosts,
+    variableCostPerUnit,
+    unitSellingPrice,
+    targetMonthlyProfit,
+    unitMfgCost,
+    wholesalePrice,
+    msrp,
+  });
+
+  const hasChanges =
+    materialCost !== applied.materialCost ||
+    laborCost !== applied.laborCost ||
+    shippingCost !== applied.shippingCost ||
+    packagingCost !== applied.packagingCost ||
+    overheadAlloc !== applied.overheadAlloc ||
+    targetMarginPct !== applied.targetMarginPct ||
+    discountPct !== applied.discountPct ||
+    salesTaxPct !== applied.salesTaxPct ||
+    fixedMonthlyCosts !== applied.fixedMonthlyCosts ||
+    variableCostPerUnit !== applied.variableCostPerUnit ||
+    unitSellingPrice !== applied.unitSellingPrice ||
+    targetMonthlyProfit !== applied.targetMonthlyProfit ||
+    unitMfgCost !== applied.unitMfgCost ||
+    wholesalePrice !== applied.wholesalePrice ||
+    msrp !== applied.msrp;
+
+  const handleCalculate = () => {
+    setApplied({
+      materialCost,
+      laborCost,
+      shippingCost,
+      packagingCost,
+      overheadAlloc,
+      targetMarginPct,
+      discountPct,
+      salesTaxPct,
+      fixedMonthlyCosts,
+      variableCostPerUnit,
+      unitSellingPrice,
+      targetMonthlyProfit,
+      unitMfgCost,
+      wholesalePrice,
+      msrp,
+    });
+  };
+
   // Calculations for Product Pricing
-  const totalCostPerUnit = materialCost + laborCost + shippingCost + packagingCost + overheadAlloc;
-  const recommendedPrice = targetMarginPct < 100 ? totalCostPerUnit / (1 - (targetMarginPct / 100)) : 0;
+  const totalCostPerUnit = applied.materialCost + applied.laborCost + applied.shippingCost + applied.packagingCost + applied.overheadAlloc;
+  const recommendedPrice = applied.targetMarginPct < 100 ? totalCostPerUnit / (1 - (applied.targetMarginPct / 100)) : 0;
   const unitProfit = recommendedPrice - totalCostPerUnit;
   const markupPct = totalCostPerUnit > 0 ? (unitProfit / totalCostPerUnit) * 100 : 0;
-  const discountedPrice = recommendedPrice * (1 - (discountPct / 100));
+  const discountedPrice = recommendedPrice * (1 - (applied.discountPct / 100));
   const profitAfterDiscount = discountedPrice - totalCostPerUnit;
   const minimumAcceptablePrice = totalCostPerUnit;
 
   // Calculations for Break-Even
-  const contributionMargin = unitSellingPrice - variableCostPerUnit;
-  const contributionMarginRatio = unitSellingPrice > 0 ? (contributionMargin / unitSellingPrice) * 100 : 0;
-  const breakEvenUnits = contributionMargin > 0 ? Math.ceil(fixedMonthlyCosts / contributionMargin) : 0;
-  const breakEvenRevenue = breakEvenUnits * unitSellingPrice;
-  const unitsForTargetProfit = contributionMargin > 0 ? Math.ceil((fixedMonthlyCosts + targetMonthlyProfit) / contributionMargin) : 0;
-  const revenueForTargetProfit = unitsForTargetProfit * unitSellingPrice;
+  const contributionMargin = applied.unitSellingPrice - applied.variableCostPerUnit;
+  const contributionMarginRatio = applied.unitSellingPrice > 0 ? (contributionMargin / applied.unitSellingPrice) * 100 : 0;
+  const breakEvenUnits = contributionMargin > 0 ? Math.ceil(applied.fixedMonthlyCosts / contributionMargin) : 0;
+  const breakEvenRevenue = breakEvenUnits * applied.unitSellingPrice;
+  const unitsForTargetProfit = contributionMargin > 0 ? Math.ceil((applied.fixedMonthlyCosts + applied.targetMonthlyProfit) / contributionMargin) : 0;
+  const revenueForTargetProfit = unitsForTargetProfit * applied.unitSellingPrice;
 
   // Calculations for Wholesale Margin
-  const wholesaleProfit = wholesalePrice - unitMfgCost;
-  const wholesaleMarginPct = wholesalePrice > 0 ? (wholesaleProfit / wholesalePrice) * 100 : 0;
-  const wholesaleMarkupPct = unitMfgCost > 0 ? (wholesaleProfit / unitMfgCost) * 100 : 0;
-  const retailerMarginPct = msrp > 0 ? ((msrp - wholesalePrice) / msrp) * 100 : 0;
-  const retailerMarkupPct = wholesalePrice > 0 ? ((msrp - wholesalePrice) / wholesalePrice) * 100 : 0;
+  const wholesaleProfit = applied.wholesalePrice - applied.unitMfgCost;
+  const wholesaleMarginPct = applied.wholesalePrice > 0 ? (wholesaleProfit / applied.wholesalePrice) * 100 : 0;
+  const wholesaleMarkupPct = applied.unitMfgCost > 0 ? (wholesaleProfit / applied.unitMfgCost) * 100 : 0;
+  const retailerMarginPct = applied.msrp > 0 ? ((applied.msrp - applied.wholesalePrice) / applied.msrp) * 100 : 0;
+  const retailerMarkupPct = applied.wholesalePrice > 0 ? ((applied.msrp - applied.wholesalePrice) / applied.wholesalePrice) * 100 : 0;
 
   const titles: Record<string, string> = {
     'product-pricing': 'Product Pricing & Profit Margin Calculator',
@@ -324,6 +379,23 @@ Retailer Margin at MSRP ($${msrp.toFixed(2)}): ${retailerMarginPct.toFixed(1)}% 
             )}
           </div>
 
+          {/* Calculate button for inputs */}
+          <div className="p-4 bg-white card-dev27 shadow-md rounded-[4px] border border-slate-200/90">
+            <button
+              type="button"
+              onClick={handleCalculate}
+              className="w-full py-3 px-5 text-sm font-extrabold rounded-[4px] shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-all bg-[#8A244B] hover:bg-[#721C3D] text-white"
+            >
+              <Calculator className="w-4 h-4" />
+              {hasChanges ? 'Apply & Calculate' : 'Calculate'}
+            </button>
+            {hasChanges && (
+              <p className="text-xs text-amber-800 font-semibold text-center mt-2 bg-amber-50 border border-amber-200 py-1.5 px-2 rounded-[4px]">
+                Inputs modified. Click "Apply & Calculate" to view updated metrics.
+              </p>
+            )}
+          </div>
+
           {/* Formula Card */}
           <div className="p-4 bg-white card-dev27 text-xs text-slate-600 space-y-2">
             <span className="font-extrabold text-slate-800 uppercase tracking-wider block">Financial Formula:</span>
@@ -341,6 +413,16 @@ Retailer Margin at MSRP ($${msrp.toFixed(2)}): ${retailerMarginPct.toFixed(1)}% 
 
         {/* Right Column: Output Layout with Easy-to-Read Highlights */}
         <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-4">
+          {hasChanges && (
+            <button
+              type="button"
+              onClick={handleCalculate}
+              className="w-full py-2.5 px-4 bg-[#8A244B] hover:bg-[#721C3D] text-white text-xs font-bold rounded-[4px] shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-colors"
+            >
+              <Calculator className="w-4 h-4" />
+              Apply Changes &amp; Recalculate
+            </button>
+          )}
           {tool === 'product-pricing' && (
             <>
               {/* Hero Pricing Highlight */}

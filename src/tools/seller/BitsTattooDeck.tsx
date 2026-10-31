@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DollarSign, Percent, Hammer, Scissors, Layers, Check, Copy } from 'lucide-react';
+import { DollarSign, Percent, Hammer, Scissors, Layers, Check, Copy, Calculator } from 'lucide-react';
 
 interface ToolProps {
   tool: 'deck-material' | 'twitch-bits' | 'tattoo-price';
@@ -33,34 +33,101 @@ export const BitsTattooDeckCalculator: React.FC<ToolProps> = ({ tool }) => {
   const [depositPaid, setDepositPaid] = useState<number>(50);
   const [tipPct, setTipPct] = useState<number>(20);
 
-  // Deck Calculations
-  const deckAreaSqFt = deckLengthFt * deckWidthFt;
-  const boardCoverageSqFt = (boardWidthInches / 12) * boardLengthFt;
+  const [applied, setApplied] = useState({
+    deckLengthFt,
+    deckWidthFt,
+    boardWidthInches,
+    boardLengthFt,
+    joistSpacingInches,
+    postSpacingFt,
+    wastePct,
+    boardPrice,
+    bitsInput,
+    targetUsdInput,
+    tattooWidthInches,
+    tattooHeightInches,
+    estimatedHours,
+    hourlyRate,
+    shopMinimum,
+    complexity,
+    isColor,
+    depositPaid,
+    tipPct,
+  });
+
+  const hasChanges =
+    deckLengthFt !== applied.deckLengthFt ||
+    deckWidthFt !== applied.deckWidthFt ||
+    boardWidthInches !== applied.boardWidthInches ||
+    boardLengthFt !== applied.boardLengthFt ||
+    joistSpacingInches !== applied.joistSpacingInches ||
+    postSpacingFt !== applied.postSpacingFt ||
+    wastePct !== applied.wastePct ||
+    boardPrice !== applied.boardPrice ||
+    bitsInput !== applied.bitsInput ||
+    targetUsdInput !== applied.targetUsdInput ||
+    tattooWidthInches !== applied.tattooWidthInches ||
+    tattooHeightInches !== applied.tattooHeightInches ||
+    estimatedHours !== applied.estimatedHours ||
+    hourlyRate !== applied.hourlyRate ||
+    shopMinimum !== applied.shopMinimum ||
+    complexity !== applied.complexity ||
+    isColor !== applied.isColor ||
+    depositPaid !== applied.depositPaid ||
+    tipPct !== applied.tipPct;
+
+  const handleCalculate = () => {
+    setApplied({
+      deckLengthFt,
+      deckWidthFt,
+      boardWidthInches,
+      boardLengthFt,
+      joistSpacingInches,
+      postSpacingFt,
+      wastePct,
+      boardPrice,
+      bitsInput,
+      targetUsdInput,
+      tattooWidthInches,
+      tattooHeightInches,
+      estimatedHours,
+      hourlyRate,
+      shopMinimum,
+      complexity,
+      isColor,
+      depositPaid,
+      tipPct,
+    });
+  };
+
+  // Deck Calculations from applied state
+  const deckAreaSqFt = applied.deckLengthFt * applied.deckWidthFt;
+  const boardCoverageSqFt = (applied.boardWidthInches / 12) * applied.boardLengthFt;
   const rawBoardCount = Math.ceil(deckAreaSqFt / (boardCoverageSqFt || 1));
-  const totalDeckBoards = Math.ceil(rawBoardCount * (1 + wastePct / 100));
+  const totalDeckBoards = Math.ceil(rawBoardCount * (1 + applied.wastePct / 100));
 
-  const joistCount = Math.ceil((deckLengthFt * 12) / joistSpacingInches) + 1;
-  const perimeterFt = 2 * (deckLengthFt + deckWidthFt);
-  const postCount = Math.max(4, Math.ceil(deckLengthFt / postSpacingFt + 1) * 2);
-  const beamBoards = Math.ceil(deckLengthFt / 10) * 2;
+  const joistCount = Math.ceil((applied.deckLengthFt * 12) / applied.joistSpacingInches) + 1;
+  const perimeterFt = 2 * (applied.deckLengthFt + applied.deckWidthFt);
+  const postCount = Math.max(4, Math.ceil(applied.deckLengthFt / applied.postSpacingFt + 1) * 2);
+  const beamBoards = Math.ceil(applied.deckLengthFt / 10) * 2;
   const screwBoxes = Math.ceil(deckAreaSqFt / 100);
-  const estimatedMaterialCost = totalDeckBoards * boardPrice + joistCount * 14 + postCount * 22 + screwBoxes * 35;
+  const estimatedMaterialCost = totalDeckBoards * applied.boardPrice + joistCount * 14 + postCount * 22 + screwBoxes * 35;
 
-  // Twitch Bits Calculations
-  const creatorUsd = bitsInput * 0.01;
-  const estimatedViewerCost = bitsInput * 0.014;
+  // Twitch Bits Calculations from applied state
+  const creatorUsd = applied.bitsInput * 0.01;
+  const estimatedViewerCost = applied.bitsInput * 0.014;
   const twitchPlatformCut = estimatedViewerCost - creatorUsd;
-  const bitsNeededForTargetUsd = Math.round(targetUsdInput / 0.01);
+  const bitsNeededForTargetUsd = Math.round(applied.targetUsdInput / 0.01);
 
-  // Tattoo Calculations
-  const squareInches = tattooWidthInches * tattooHeightInches;
-  const complexityMultiplier = complexity === 'minimal' ? 0.9 : complexity === 'moderate' ? 1.0 : 1.35;
-  const colorMultiplier = isColor ? 1.2 : 1.0;
-  const rawHourlyCost = estimatedHours * hourlyRate * complexityMultiplier * colorMultiplier;
-  const baseTattooCost = Math.max(shopMinimum, rawHourlyCost);
-  const tipAmount = baseTattooCost * (tipPct / 100);
+  // Tattoo Calculations from applied state
+  const squareInches = applied.tattooWidthInches * applied.tattooHeightInches;
+  const complexityMultiplier = applied.complexity === 'minimal' ? 0.9 : applied.complexity === 'moderate' ? 1.0 : 1.35;
+  const colorMultiplier = applied.isColor ? 1.2 : 1.0;
+  const rawHourlyCost = applied.estimatedHours * applied.hourlyRate * complexityMultiplier * colorMultiplier;
+  const baseTattooCost = Math.max(applied.shopMinimum, rawHourlyCost);
+  const tipAmount = baseTattooCost * (applied.tipPct / 100);
   const totalTattooWithTip = baseTattooCost + tipAmount;
-  const remainingBalance = totalTattooWithTip - depositPaid;
+  const remainingBalance = totalTattooWithTip - applied.depositPaid;
 
   const titles: Record<string, string> = {
     'deck-material': 'Deck Material, Framing & Lumber Calculator',
@@ -376,10 +443,37 @@ Total Balance Due: $${remainingBalance.toFixed(0)}`;
               </div>
             )}
           </div>
+
+          {/* Action button to calculate */}
+          <div className="p-4 bg-white card-dev27 shadow-md rounded-[4px] border border-slate-200/90">
+            <button
+              type="button"
+              onClick={handleCalculate}
+              className="w-full py-3 px-5 text-sm font-extrabold rounded-[4px] shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-all bg-[#8A244B] hover:bg-[#721C3D] text-white"
+            >
+              <Calculator className="w-4 h-4" />
+              {hasChanges ? 'Apply & Calculate' : 'Calculate'}
+            </button>
+            {hasChanges && (
+              <p className="text-xs text-amber-800 font-semibold text-center mt-2 bg-amber-50 border border-amber-200 py-1.5 px-2 rounded-[4px]">
+                Inputs modified. Click "Apply & Calculate" to view updated results.
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Right Column: Output Layout with Easy-to-Read Highlights */}
         <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-4">
+          {hasChanges && (
+            <button
+              type="button"
+              onClick={handleCalculate}
+              className="w-full py-2.5 px-4 bg-[#8A244B] hover:bg-[#721C3D] text-white text-xs font-bold rounded-[4px] shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-colors"
+            >
+              <Calculator className="w-4 h-4" />
+              Apply Changes &amp; Recalculate
+            </button>
+          )}
           {tool === 'deck-material' && (
             <>
               {/* Hero Deck Highlight */}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DollarSign, Clock, Calendar, Download, Plus, Trash2, Copy, Check } from 'lucide-react';
+import { DollarSign, Clock, Calendar, Download, Plus, Trash2, Copy, Check, Calculator } from 'lucide-react';
 
 interface Props {
   type: 'overtime' | 'freelance-rate' | 'work-hours';
@@ -40,24 +40,73 @@ export const WorkCalculators: React.FC<Props> = ({ type }) => {
     { id: '5', day: 'Friday', start: '09:00', end: '16:00', breakMinutes: 30, hourlyPay: 30 },
   ]);
 
-  // Overtime calculations
-  const regularHours = Math.min(actualHoursWorked, regularHoursLimit);
-  const overtimeHours = Math.max(0, Math.min(actualHoursWorked - regularHoursLimit, doubleTimeThreshold - regularHoursLimit));
-  const doubleTimeHours = Math.max(0, actualHoursWorked - doubleTimeThreshold);
+  const [applied, setApplied] = useState({
+    hourlyWage,
+    regularHoursLimit,
+    actualHoursWorked,
+    otMultiplier,
+    doubleTimeThreshold,
+    doubleTimeMultiplier,
+    targetAnnualIncome,
+    monthlyExpenses,
+    taxRatePct,
+    vacationWeeks,
+    billableHoursPerDay,
+    daysPerWeek,
+    shifts,
+  });
 
-  const regularPay = regularHours * hourlyWage;
-  const overtimePay = overtimeHours * hourlyWage * otMultiplier;
-  const doubleTimePay = doubleTimeHours * hourlyWage * doubleTimeMultiplier;
+  const hasChanges =
+    hourlyWage !== applied.hourlyWage ||
+    regularHoursLimit !== applied.regularHoursLimit ||
+    actualHoursWorked !== applied.actualHoursWorked ||
+    otMultiplier !== applied.otMultiplier ||
+    doubleTimeThreshold !== applied.doubleTimeThreshold ||
+    doubleTimeMultiplier !== applied.doubleTimeMultiplier ||
+    targetAnnualIncome !== applied.targetAnnualIncome ||
+    monthlyExpenses !== applied.monthlyExpenses ||
+    taxRatePct !== applied.taxRatePct ||
+    vacationWeeks !== applied.vacationWeeks ||
+    billableHoursPerDay !== applied.billableHoursPerDay ||
+    daysPerWeek !== applied.daysPerWeek ||
+    shifts !== applied.shifts;
+
+  const handleCalculate = () => {
+    setApplied({
+      hourlyWage,
+      regularHoursLimit,
+      actualHoursWorked,
+      otMultiplier,
+      doubleTimeThreshold,
+      doubleTimeMultiplier,
+      targetAnnualIncome,
+      monthlyExpenses,
+      taxRatePct,
+      vacationWeeks,
+      billableHoursPerDay,
+      daysPerWeek,
+      shifts,
+    });
+  };
+
+  // Overtime calculations from applied state
+  const regularHours = Math.min(applied.actualHoursWorked, applied.regularHoursLimit);
+  const overtimeHours = Math.max(0, Math.min(applied.actualHoursWorked - applied.regularHoursLimit, applied.doubleTimeThreshold - applied.regularHoursLimit));
+  const doubleTimeHours = Math.max(0, applied.actualHoursWorked - applied.doubleTimeThreshold);
+
+  const regularPay = regularHours * applied.hourlyWage;
+  const overtimePay = overtimeHours * applied.hourlyWage * applied.otMultiplier;
+  const doubleTimePay = doubleTimeHours * applied.hourlyWage * applied.doubleTimeMultiplier;
   const totalGrossPay = regularPay + overtimePay + doubleTimePay;
 
-  // Freelance Rate calculations
-  const workingWeeksPerYear = 52 - vacationWeeks;
-  const totalAnnualExpenses = monthlyExpenses * 12;
-  const grossIncomeNeeded = (targetAnnualIncome + totalAnnualExpenses) / (1 - (taxRatePct / 100));
-  const totalBillableHoursPerYear = workingWeeksPerYear * daysPerWeek * billableHoursPerDay;
+  // Freelance Rate calculations from applied state
+  const workingWeeksPerYear = 52 - applied.vacationWeeks;
+  const totalAnnualExpenses = applied.monthlyExpenses * 12;
+  const grossIncomeNeeded = (applied.targetAnnualIncome + totalAnnualExpenses) / (1 - (applied.taxRatePct / 100));
+  const totalBillableHoursPerYear = workingWeeksPerYear * applied.daysPerWeek * applied.billableHoursPerDay;
   const hourlyRateNeeded = totalBillableHoursPerYear > 0 ? grossIncomeNeeded / totalBillableHoursPerYear : 0;
-  const dayRate = hourlyRateNeeded * billableHoursPerDay;
-  const weeklyRate = dayRate * daysPerWeek;
+  const dayRate = hourlyRateNeeded * applied.billableHoursPerDay;
+  const weeklyRate = dayRate * applied.daysPerWeek;
   const monthlyRate = grossIncomeNeeded / 12;
 
   // Work Hours helper
@@ -353,10 +402,37 @@ Active Days: ${shifts.length} days`;
               </div>
             )}
           </div>
+
+          {/* Action button to calculate */}
+          <div className="p-4 bg-white card-dev27 shadow-md rounded-[4px] border border-slate-200/90">
+            <button
+              type="button"
+              onClick={handleCalculate}
+              className="w-full py-3 px-5 text-sm font-extrabold rounded-[4px] shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-all bg-[#8A244B] hover:bg-[#721C3D] text-white"
+            >
+              <Calculator className="w-4 h-4" />
+              {hasChanges ? 'Apply & Calculate' : 'Calculate'}
+            </button>
+            {hasChanges && (
+              <p className="text-xs text-amber-800 font-semibold text-center mt-2 bg-amber-50 border border-amber-200 py-1.5 px-2 rounded-[4px]">
+                Work parameters modified. Click "Apply & Calculate" to view updated earnings.
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Right Column: Output Layout with Easy-to-Read Highlights */}
         <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-4">
+          {hasChanges && (
+            <button
+              type="button"
+              onClick={handleCalculate}
+              className="w-full py-2.5 px-4 bg-[#8A244B] hover:bg-[#721C3D] text-white text-xs font-bold rounded-[4px] shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-colors"
+            >
+              <Calculator className="w-4 h-4" />
+              Apply Changes &amp; Recalculate
+            </button>
+          )}
           {type === 'overtime' && (
             <>
               {/* Hero Pay Highlight */}

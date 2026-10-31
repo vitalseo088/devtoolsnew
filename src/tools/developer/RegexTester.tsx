@@ -31,27 +31,46 @@ export const RegexTester: React.FC = () => {
   ]);
   const [newTestCase, setNewTestCase] = useState<string>('');
 
+  const [appliedPattern, setAppliedPattern] = useState<string>(pattern);
+  const [appliedFlags, setAppliedFlags] = useState(flags);
+  const [appliedText, setAppliedText] = useState<string>(testText);
+
   const flagStr = useMemo(() => {
+    return Object.entries(appliedFlags)
+      .filter(([_, active]) => active)
+      .map(([f]) => f)
+      .join('');
+  }, [appliedFlags]);
+
+  const currentFlagStr = useMemo(() => {
     return Object.entries(flags)
       .filter(([_, active]) => active)
       .map(([f]) => f)
       .join('');
   }, [flags]);
 
+  const hasChanges = pattern !== appliedPattern || JSON.stringify(flags) !== JSON.stringify(appliedFlags) || testText !== appliedText;
+
+  const handleApply = () => {
+    setAppliedPattern(pattern);
+    setAppliedFlags(flags);
+    setAppliedText(testText);
+  };
+
   const regexResult = useMemo(() => {
-    if (!pattern) {
-      return { matches: [], error: null, replaced: testText };
+    if (!appliedPattern) {
+      return { matches: [], error: null, replaced: appliedText };
     }
     try {
-      const rx = new RegExp(pattern, flagStr);
+      const rx = new RegExp(appliedPattern, flagStr);
       const matches: any[] = [];
       let replaced = '';
 
-      if (flags.g) {
+      if (appliedFlags.g) {
         let match;
         let count = 0;
         const maxMatches = 1000;
-        while ((match = rx.exec(testText)) !== null && count < maxMatches) {
+        while ((match = rx.exec(appliedText)) !== null && count < maxMatches) {
           count++;
           matches.push({
             index: match.index,
@@ -65,7 +84,7 @@ export const RegexTester: React.FC = () => {
           }
         }
       } else {
-        const match = rx.exec(testText);
+        const match = rx.exec(appliedText);
         if (match) {
           matches.push({
             index: match.index,
@@ -78,9 +97,9 @@ export const RegexTester: React.FC = () => {
       }
 
       try {
-        replaced = testText.replace(new RegExp(pattern, flagStr), replaceStr);
+        replaced = appliedText.replace(new RegExp(appliedPattern, flagStr), replaceStr);
       } catch {
-        replaced = testText;
+        replaced = appliedText;
       }
 
       return { matches, error: null, replaced };
@@ -163,11 +182,18 @@ export const RegexTester: React.FC = () => {
           </div>
 
           <button
-            onClick={copyPattern}
-            className="px-3 py-2 text-xs font-semibold bg-[#8A244B] hover:bg-[#721C3D] text-white rounded-[4px] flex items-center justify-center gap-1.5"
+            onClick={handleApply}
+            className="px-4 py-2 text-xs font-bold bg-[#8A244B] hover:bg-[#721C3D] text-white rounded-[4px] flex items-center justify-center gap-1.5 cursor-pointer shadow-sm transition-colors"
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-green-300" /> : <Copy className="w-3.5 h-3.5" />}
-            {copied ? 'Copied' : 'Copy Regex'}
+            <Play className="w-3.5 h-3.5 fill-current" />
+            {hasChanges ? 'Apply & Test' : 'Test Regex'}
+          </button>
+          <button
+            onClick={copyPattern}
+            className="px-3 py-2 text-xs font-semibold bg-[#F2EFE7] hover:bg-slate-200 text-[#111F35] rounded-[4px] flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+          >
+            {copied ? <Check className="w-3.5 h-3.5 text-green-700" /> : <Copy className="w-3.5 h-3.5 text-[#8A244B]" />}
+            {copied ? 'Copied' : 'Copy'}
           </button>
         </div>
 
@@ -222,10 +248,17 @@ export const RegexTester: React.FC = () => {
           <textarea
             value={testText}
             onChange={(e) => setTestText(e.target.value)}
-            rows={10}
+            rows={9}
             className="w-full font-mono text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-[4px] focus:outline-none focus:border-[#8A244B] resize-y"
             placeholder="Type or paste test text..."
           />
+          <button
+            onClick={handleApply}
+            className="mt-2.5 w-full py-2 bg-[#8A244B] hover:bg-[#721C3D] text-white text-xs font-bold rounded-[4px] shadow-sm flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+          >
+            <Play className="w-3.5 h-3.5 fill-current" />
+            {hasChanges ? 'Apply & Run Regex Test' : 'Run Regex Test'}
+          </button>
         </div>
 
         <div className="flex flex-col card-dev27 p-3 bg-white">

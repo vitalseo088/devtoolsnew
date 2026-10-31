@@ -20,9 +20,12 @@ export const UnixTimestamp: React.FC = () => {
     return () => clearInterval(interval);
   }, [isLive]);
 
+  const [appliedTimestamp, setAppliedTimestamp] = useState<string>(timestampInput);
+  const [appliedDate, setAppliedDate] = useState<string>(dateInput);
+
   // Parse input timestamp
   const parsedDate = React.useMemo(() => {
-    const raw = timestampInput.trim();
+    const raw = appliedTimestamp.trim();
     if (!raw) return null;
     const num = Number(raw);
     if (isNaN(num)) return null;
@@ -38,18 +41,18 @@ export const UnixTimestamp: React.FC = () => {
     }
     const d = new Date(ms);
     return isNaN(d.getTime()) ? null : d;
-  }, [timestampInput, unit]);
+  }, [appliedTimestamp, unit]);
 
   // Convert date to timestamp
   const convertedFromDate = React.useMemo(() => {
-    if (!dateInput) return null;
-    const d = new Date(dateInput);
+    if (!appliedDate) return null;
+    const d = new Date(appliedDate);
     if (isNaN(d.getTime())) return null;
     return {
       seconds: Math.floor(d.getTime() / 1000),
       ms: d.getTime(),
     };
-  }, [dateInput]);
+  }, [appliedDate]);
 
   const copyValue = (val: string, key: string) => {
     navigator.clipboard.writeText(val);
@@ -139,10 +142,20 @@ export const UnixTimestamp: React.FC = () => {
             className="flex-1 font-mono text-sm p-2 border border-slate-300 rounded-[4px] bg-slate-50 focus:border-[#8A244B] focus:outline-none"
           />
           <button
-            onClick={() => setTimestampInput(String(Math.floor(Date.now() / 1000)))}
+            onClick={() => {
+              const now = String(Math.floor(Date.now() / 1000));
+              setTimestampInput(now);
+              setAppliedTimestamp(now);
+            }}
             className="px-3 py-2 text-xs font-medium bg-[#F2EFE7] hover:bg-slate-200 text-[#111F35] rounded-[4px]"
           >
             Now
+          </button>
+          <button
+            onClick={() => setAppliedTimestamp(timestampInput)}
+            className="px-4 py-2 text-xs font-bold bg-[#8A244B] hover:bg-[#721C3D] text-white rounded-[4px] shadow-sm cursor-pointer transition-colors"
+          >
+            Convert
           </button>
         </div>
 
@@ -213,6 +226,12 @@ export const UnixTimestamp: React.FC = () => {
               onChange={(e) => setDateInput(e.target.value)}
               className="w-full text-xs font-mono p-2 border border-slate-300 rounded-[4px] bg-white focus:border-[#8A244B] focus:outline-none"
             />
+            <button
+              onClick={() => setAppliedDate(dateInput)}
+              className="mt-2 w-full py-1.5 text-xs font-bold bg-[#8A244B] hover:bg-[#721C3D] text-white rounded-[4px] shadow-sm cursor-pointer transition-colors"
+            >
+              Convert to Timestamp
+            </button>
           </div>
 
           {convertedFromDate && (

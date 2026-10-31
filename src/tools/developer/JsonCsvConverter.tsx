@@ -454,15 +454,18 @@ export const JsonCsvConverter: React.FC<Props> = ({ initialMode = 'json-to-csv' 
           </div>
           <textarea
             value={input}
-            onChange={(e) => {
-              setInput(e.target.value);
-              handleRun(e.target.value, mode);
-            }}
+            onChange={(e) => setInput(e.target.value)}
             placeholder={mode === 'json-to-csv' ? 'Paste JSON array here...' : 'Paste CSV text here...'}
-            rows={15}
+            rows={14}
             className="w-full font-mono text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-[4px] focus:outline-none focus:border-[#8A244B] resize-y"
             spellCheck={false}
           />
+          <button
+            onClick={() => handleRun(input, mode)}
+            className="mt-3 w-full py-2.5 bg-[#8A244B] hover:bg-[#721C3D] text-white text-xs font-bold rounded-[4px] shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-colors"
+          >
+            Convert {mode === 'json-to-csv' ? 'JSON to CSV' : 'CSV to JSON'}
+          </button>
         </div>
 
         <div className="flex flex-col card-dev27 p-3 bg-white">

@@ -90,7 +90,6 @@ replica:
 
   const handleInputChange = (val: string) => {
     setInput(val);
-    convert(val, mode);
   };
 
   const handleCopy = () => {
@@ -246,10 +245,17 @@ replica:
             value={input}
             onChange={(e) => handleInputChange(e.target.value)}
             placeholder={mode === 'yaml-to-json' ? 'Paste or write YAML here...' : 'Paste or write JSON here...'}
-            rows={16}
+            rows={15}
             className="w-full font-mono text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-[4px] focus:outline-none focus:border-[#8A244B] resize-y"
             spellCheck={false}
           />
+          <button
+            onClick={() => convert(input, mode)}
+            className="mt-3 w-full py-2.5 bg-[#8A244B] hover:bg-[#721C3D] text-white text-xs font-bold rounded-[4px] shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-colors"
+          >
+            <ArrowLeftRight className="w-4 h-4" />
+            Convert {mode === 'yaml-to-json' ? 'YAML to JSON' : 'JSON to YAML'}
+          </button>
         </div>
 
         {/* Output Column */}

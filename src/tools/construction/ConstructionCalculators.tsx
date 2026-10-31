@@ -65,74 +65,210 @@ export const ConstructionCalculators: React.FC<Props> = ({ tool }) => {
   const [boxCoverageSqFt, setBoxCoverageSqFt] = useState<number>(24);
   const [pricePerSqFt, setPricePerSqFt] = useState<number>(4.20);
 
+  const [applied, setApplied] = useState({
+    roofRiseInches,
+    roofRunInches,
+    roofSpanFt,
+    overhangInches,
+    floorHeightInches,
+    targetRiserInches,
+    targetTreadInches,
+    concreteShape,
+    slabLengthFt,
+    slabWidthFt,
+    slabThicknessInches,
+    columnDiameterInches,
+    columnHeightFt,
+    concreteWastePct,
+    bagSize,
+    pricePerBag,
+    gravelLengthFt,
+    gravelWidthFt,
+    gravelDepthInches,
+    stoneDensityTonsPerYard,
+    fenceLengthFt,
+    fenceHeightFt,
+    postSpacingFt,
+    gateCount,
+    gateWidthFt,
+    picketWidthInches,
+    roomLengthFt,
+    roomWidthFt,
+    roomCeilingHeightFt,
+    includeCeiling,
+    doorCount,
+    windowCount,
+    sheetSize,
+    floorRoomLengthFt,
+    floorRoomWidthFt,
+    installPattern,
+    boxCoverageSqFt,
+    pricePerSqFt,
+    cDeckLengthFt,
+    cDeckWidthFt,
+    cBoardWidthInches,
+    cBoardLengthFt,
+  });
+
+  const hasChanges =
+    roofRiseInches !== applied.roofRiseInches ||
+    roofRunInches !== applied.roofRunInches ||
+    roofSpanFt !== applied.roofSpanFt ||
+    overhangInches !== applied.overhangInches ||
+    floorHeightInches !== applied.floorHeightInches ||
+    targetRiserInches !== applied.targetRiserInches ||
+    targetTreadInches !== applied.targetTreadInches ||
+    concreteShape !== applied.concreteShape ||
+    slabLengthFt !== applied.slabLengthFt ||
+    slabWidthFt !== applied.slabWidthFt ||
+    slabThicknessInches !== applied.slabThicknessInches ||
+    columnDiameterInches !== applied.columnDiameterInches ||
+    columnHeightFt !== applied.columnHeightFt ||
+    concreteWastePct !== applied.concreteWastePct ||
+    bagSize !== applied.bagSize ||
+    pricePerBag !== applied.pricePerBag ||
+    gravelLengthFt !== applied.gravelLengthFt ||
+    gravelWidthFt !== applied.gravelWidthFt ||
+    gravelDepthInches !== applied.gravelDepthInches ||
+    stoneDensityTonsPerYard !== applied.stoneDensityTonsPerYard ||
+    fenceLengthFt !== applied.fenceLengthFt ||
+    fenceHeightFt !== applied.fenceHeightFt ||
+    postSpacingFt !== applied.postSpacingFt ||
+    gateCount !== applied.gateCount ||
+    gateWidthFt !== applied.gateWidthFt ||
+    picketWidthInches !== applied.picketWidthInches ||
+    roomLengthFt !== applied.roomLengthFt ||
+    roomWidthFt !== applied.roomWidthFt ||
+    roomCeilingHeightFt !== applied.roomCeilingHeightFt ||
+    includeCeiling !== applied.includeCeiling ||
+    doorCount !== applied.doorCount ||
+    windowCount !== applied.windowCount ||
+    sheetSize !== applied.sheetSize ||
+    floorRoomLengthFt !== applied.floorRoomLengthFt ||
+    floorRoomWidthFt !== applied.floorRoomWidthFt ||
+    installPattern !== applied.installPattern ||
+    boxCoverageSqFt !== applied.boxCoverageSqFt ||
+    pricePerSqFt !== applied.pricePerSqFt ||
+    cDeckLengthFt !== applied.cDeckLengthFt ||
+    cDeckWidthFt !== applied.cDeckWidthFt ||
+    cBoardWidthInches !== applied.cBoardWidthInches ||
+    cBoardLengthFt !== applied.cBoardLengthFt;
+
+  const handleCalculate = () => {
+    setApplied({
+      roofRiseInches,
+      roofRunInches,
+      roofSpanFt,
+      overhangInches,
+      floorHeightInches,
+      targetRiserInches,
+      targetTreadInches,
+      concreteShape,
+      slabLengthFt,
+      slabWidthFt,
+      slabThicknessInches,
+      columnDiameterInches,
+      columnHeightFt,
+      concreteWastePct,
+      bagSize,
+      pricePerBag,
+      gravelLengthFt,
+      gravelWidthFt,
+      gravelDepthInches,
+      stoneDensityTonsPerYard,
+      fenceLengthFt,
+      fenceHeightFt,
+      postSpacingFt,
+      gateCount,
+      gateWidthFt,
+      picketWidthInches,
+      roomLengthFt,
+      roomWidthFt,
+      roomCeilingHeightFt,
+      includeCeiling,
+      doorCount,
+      windowCount,
+      sheetSize,
+      floorRoomLengthFt,
+      floorRoomWidthFt,
+      installPattern,
+      boxCoverageSqFt,
+      pricePerSqFt,
+      cDeckLengthFt,
+      cDeckWidthFt,
+      cBoardWidthInches,
+      cBoardLengthFt,
+    });
+  };
+
   // 5.1 Roof Pitch
-  const pitchRatio = `${roofRiseInches}:12`;
-  const roofAngleDeg = (Math.atan(roofRiseInches / roofRunInches) * 180) / Math.PI;
-  const slopePercentage = (roofRiseInches / roofRunInches) * 100;
-  const halfSpanInches = (roofSpanFt * 12) / 2;
-  const totalRunInches = halfSpanInches + overhangInches;
-  const rafterLengthInches = Math.sqrt(Math.pow(totalRunInches, 2) + Math.pow((totalRunInches * (roofRiseInches / 12)), 2));
+  const pitchRatio = `${applied.roofRiseInches}:12`;
+  const roofAngleDeg = (Math.atan(applied.roofRiseInches / applied.roofRunInches) * 180) / Math.PI;
+  const slopePercentage = (applied.roofRiseInches / applied.roofRunInches) * 100;
+  const halfSpanInches = (applied.roofSpanFt * 12) / 2;
+  const totalRunInches = halfSpanInches + applied.overhangInches;
+  const rafterLengthInches = Math.sqrt(Math.pow(totalRunInches, 2) + Math.pow((totalRunInches * (applied.roofRiseInches / 12)), 2));
   const rafterLengthFt = rafterLengthInches / 12;
 
   // 5.2 Stair
-  const numRisers = Math.round(floorHeightInches / targetRiserInches);
-  const actualRiserHeight = floorHeightInches / (numRisers || 1);
+  const numRisers = Math.round(applied.floorHeightInches / applied.targetRiserInches);
+  const actualRiserHeight = applied.floorHeightInches / (numRisers || 1);
   const numTreads = Math.max(1, numRisers - 1);
-  const totalStairRunInches = numTreads * targetTreadInches;
-  const stairAngleDeg = (Math.atan(actualRiserHeight / targetTreadInches) * 180) / Math.PI;
-  const stringerLengthInches = Math.sqrt(Math.pow(floorHeightInches, 2) + Math.pow(totalStairRunInches, 2));
-  const isIrcCompliant = actualRiserHeight <= 7.75 && targetTreadInches >= 10.0;
+  const totalStairRunInches = numTreads * applied.targetTreadInches;
+  const stairAngleDeg = (Math.atan(actualRiserHeight / applied.targetTreadInches) * 180) / Math.PI;
+  const stringerLengthInches = Math.sqrt(Math.pow(applied.floorHeightInches, 2) + Math.pow(totalStairRunInches, 2));
+  const isIrcCompliant = actualRiserHeight <= 7.75 && applied.targetTreadInches >= 10.0;
 
   // 5.3 Concrete
   let concreteCuFt = 0;
-  if (concreteShape === 'slab') {
-    concreteCuFt = slabLengthFt * slabWidthFt * (slabThicknessInches / 12);
-  } else if (concreteShape === 'column') {
-    const radiusFt = (columnDiameterInches / 2) / 12;
-    concreteCuFt = Math.PI * Math.pow(radiusFt, 2) * columnHeightFt;
+  if (applied.concreteShape === 'slab') {
+    concreteCuFt = applied.slabLengthFt * applied.slabWidthFt * (applied.slabThicknessInches / 12);
+  } else if (applied.concreteShape === 'column') {
+    const radiusFt = (applied.columnDiameterInches / 2) / 12;
+    concreteCuFt = Math.PI * Math.pow(radiusFt, 2) * applied.columnHeightFt;
   } else {
-    concreteCuFt = slabLengthFt * (slabWidthFt) * (slabThicknessInches / 12);
+    concreteCuFt = applied.slabLengthFt * (applied.slabWidthFt) * (applied.slabThicknessInches / 12);
   }
-  const concreteCuFtWithWaste = concreteCuFt * (1 + concreteWastePct / 100);
+  const concreteCuFtWithWaste = concreteCuFt * (1 + applied.concreteWastePct / 100);
   const concreteCuYards = concreteCuFtWithWaste / 27;
-  const cuFtPerBag = bagSize === 80 ? 0.60 : 0.45;
+  const cuFtPerBag = applied.bagSize === 80 ? 0.60 : 0.45;
   const totalBagsNeeded = Math.ceil(concreteCuFtWithWaste / cuFtPerBag);
-  const totalConcreteCost = totalBagsNeeded * pricePerBag;
+  const totalConcreteCost = totalBagsNeeded * applied.pricePerBag;
 
   // 5.5 Gravel
-  const gravelAreaSqFt = gravelLengthFt * gravelWidthFt;
-  const gravelCuFt = gravelAreaSqFt * (gravelDepthInches / 12);
+  const gravelAreaSqFt = applied.gravelLengthFt * applied.gravelWidthFt;
+  const gravelCuFt = gravelAreaSqFt * (applied.gravelDepthInches / 12);
   const gravelCuYards = gravelCuFt / 27;
-  const gravelWeightTons = gravelCuYards * stoneDensityTonsPerYard;
+  const gravelWeightTons = gravelCuYards * applied.stoneDensityTonsPerYard;
   const gravelWeightKg = gravelWeightTons * 907.185;
 
   // 5.6 Fence
-  const netFenceLength = Math.max(0, fenceLengthFt - (gateCount * gateWidthFt));
-  const postSections = Math.ceil(netFenceLength / postSpacingFt);
-  const totalFencePosts = postSections + 1 + (gateCount * 2);
-  const picketsPerSection = Math.ceil((postSpacingFt * 12) / picketWidthInches);
+  const netFenceLength = Math.max(0, applied.fenceLengthFt - (applied.gateCount * applied.gateWidthFt));
+  const postSections = Math.ceil(netFenceLength / applied.postSpacingFt);
+  const totalFencePosts = postSections + 1 + (applied.gateCount * 2);
+  const picketsPerSection = Math.ceil((applied.postSpacingFt * 12) / applied.picketWidthInches);
   const totalPickets = postSections * picketsPerSection;
-  const railsPerSection = fenceHeightFt >= 6 ? 3 : 2;
+  const railsPerSection = applied.fenceHeightFt >= 6 ? 3 : 2;
   const totalRails = postSections * railsPerSection;
   const postConcreteBags = totalFencePosts * 2;
 
   // 5.7 Drywall
-  const wallPerimeter = 2 * (roomLengthFt + roomWidthFt);
-  const grossWallArea = wallPerimeter * roomCeilingHeightFt;
-  const ceilingArea = includeCeiling ? (roomLengthFt * roomWidthFt) : 0;
-  const doorsWindowsArea = (doorCount * 21) + (windowCount * 15);
+  const wallPerimeter = 2 * (applied.roomLengthFt + applied.roomWidthFt);
+  const grossWallArea = wallPerimeter * applied.roomCeilingHeightFt;
+  const ceilingArea = applied.includeCeiling ? (applied.roomLengthFt * applied.roomWidthFt) : 0;
+  const doorsWindowsArea = (applied.doorCount * 21) + (applied.windowCount * 15);
   const netDrywallArea = Math.max(0, grossWallArea + ceilingArea - doorsWindowsArea);
-  const sheetArea = sheetSize === '4x8' ? 32 : 48;
+  const sheetArea = applied.sheetSize === '4x8' ? 32 : 48;
   const drywallSheetsNeeded = Math.ceil((netDrywallArea * 1.1) / sheetArea);
   const drywallScrewsLbs = Math.ceil(drywallSheetsNeeded * 0.35);
   const jointTapeRolls = Math.ceil((drywallSheetsNeeded * 35) / 250);
 
   // 5.8 Flooring
-  const rawFloorArea = floorRoomLengthFt * floorRoomWidthFt;
-  const patternWastePct = installPattern === 'straight' ? 10 : installPattern === 'diagonal' ? 15 : 20;
+  const rawFloorArea = applied.floorRoomLengthFt * applied.floorRoomWidthFt;
+  const patternWastePct = applied.installPattern === 'straight' ? 10 : applied.installPattern === 'diagonal' ? 15 : 20;
   const totalFloorAreaWithWaste = rawFloorArea * (1 + patternWastePct / 100);
-  const boxesNeeded = Math.ceil(totalFloorAreaWithWaste / boxCoverageSqFt);
-  const totalFlooringCost = totalFloorAreaWithWaste * pricePerSqFt;
+  const boxesNeeded = Math.ceil(totalFloorAreaWithWaste / applied.boxCoverageSqFt);
+  const totalFlooringCost = totalFloorAreaWithWaste * applied.pricePerSqFt;
 
   const titles: Record<string, string> = {
     'roof-pitch': 'Roof Pitch, Angle & Rafter Length Calculator',
@@ -609,10 +745,37 @@ export const ConstructionCalculators: React.FC<Props> = ({ tool }) => {
               </div>
             )}
           </div>
+
+          {/* Calculate button for construction inputs */}
+          <div className="p-4 bg-white card-dev27 shadow-md rounded-[4px] border border-slate-200/90">
+            <button
+              type="button"
+              onClick={handleCalculate}
+              className="w-full py-3 px-5 text-sm font-extrabold rounded-[4px] shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-all bg-[#8A244B] hover:bg-[#721C3D] text-white"
+            >
+              <Hammer className="w-4 h-4" />
+              {hasChanges ? 'Apply & Calculate Estimate' : 'Calculate Estimate'}
+            </button>
+            {hasChanges && (
+              <p className="text-xs text-amber-800 font-semibold text-center mt-2 bg-amber-50 border border-amber-200 py-1.5 px-2 rounded-[4px]">
+                Dimensions modified. Click "Apply & Calculate Estimate" to view updated outputs.
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Right Column: Output Layout with Easy-to-Read Highlights */}
         <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-4">
+          {hasChanges && (
+            <button
+              type="button"
+              onClick={handleCalculate}
+              className="w-full py-2.5 px-4 bg-[#8A244B] hover:bg-[#721C3D] text-white text-xs font-bold rounded-[4px] shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-colors"
+            >
+              <Hammer className="w-4 h-4" />
+              Apply Changes &amp; Recalculate
+            </button>
+          )}
           {tool === 'roof-pitch' && (
             <div className="p-6 bg-white card-dev27 shadow-xl rounded-[4px] border border-slate-200/90 relative overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#8A244B]" />

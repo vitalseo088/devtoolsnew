@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, Check, Download, Calendar, Target, Award, AlertCircle, Copy } from 'lucide-react';
+import { Plus, Trash2, Check, Download, Calendar, Target, Award, AlertCircle, Copy, Calculator } from 'lucide-react';
 
 interface Props {
   type: 'project-cost' | 'weekly-schedule' | 'habit-tracker' | 'goal-tracker';
@@ -89,14 +89,29 @@ export const ProjectAndHabitTrackers: React.FC<Props> = ({ type }) => {
     } catch {}
   }, [goals]);
 
-  // Project Cost Calculations
-  const totalLaborCost = tasks.reduce((sum, t) => sum + (t.hours * t.laborRate * t.workers), 0);
-  const totalMaterialsCost = tasks.reduce((sum, t) => sum + t.materialsCost, 0);
-  const totalHours = tasks.reduce((sum, t) => sum + t.hours, 0);
+  const [appliedTasks, setAppliedTasks] = useState(tasks);
+  const [appliedContingency, setAppliedContingency] = useState(contingencyPct);
+  const [appliedTax, setAppliedTax] = useState(projectTaxPct);
+
+  const hasCostChanges =
+    JSON.stringify(tasks) !== JSON.stringify(appliedTasks) ||
+    contingencyPct !== appliedContingency ||
+    projectTaxPct !== appliedTax;
+
+  const handleCalculateCost = () => {
+    setAppliedTasks(tasks);
+    setAppliedContingency(contingencyPct);
+    setAppliedTax(projectTaxPct);
+  };
+
+  // Project Cost Calculations from applied state
+  const totalLaborCost = appliedTasks.reduce((sum, t) => sum + (t.hours * t.laborRate * t.workers), 0);
+  const totalMaterialsCost = appliedTasks.reduce((sum, t) => sum + t.materialsCost, 0);
+  const totalHours = appliedTasks.reduce((sum, t) => sum + t.hours, 0);
   const baseSubtotal = totalLaborCost + totalMaterialsCost;
-  const contingencyAmount = baseSubtotal * (contingencyPct / 100);
+  const contingencyAmount = baseSubtotal * (appliedContingency / 100);
   const subtotalWithContingency = baseSubtotal + contingencyAmount;
-  const taxAmount = subtotalWithContingency * (projectTaxPct / 100);
+  const taxAmount = subtotalWithContingency * (appliedTax / 100);
   const totalProjectCost = subtotalWithContingency + taxAmount;
 
   const exportProjectCostCsv = () => {
@@ -300,11 +315,38 @@ Tax (${projectTaxPct}%): +$${taxAmount.toFixed(0)}`;
                   />
                 </div>
               </div>
+
+              {/* Action button to calculate */}
+              <div className="pt-3">
+                <button
+                  type="button"
+                  onClick={handleCalculateCost}
+                  className="w-full py-2.5 px-4 bg-[#8A244B] hover:bg-[#721C3D] text-white text-xs font-bold rounded-[4px] shadow-sm flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+                >
+                  <Calculator className="w-4 h-4" />
+                  {hasCostChanges ? 'Apply & Calculate Budget' : 'Calculate Budget'}
+                </button>
+                {hasCostChanges && (
+                  <p className="text-[11px] text-amber-800 font-semibold text-center mt-1.5 bg-amber-50 border border-amber-200 py-1 px-2 rounded-[4px]">
+                    Tasks or rates modified. Click to recalculate budget.
+                  </p>
+                )}
+              </div>
             </div>
           </div>
 
           {/* Right Column: Output Layout with Easy-to-Read Highlights */}
           <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-4">
+            {hasCostChanges && (
+              <button
+                type="button"
+                onClick={handleCalculateCost}
+                className="w-full py-2.5 px-4 bg-[#8A244B] hover:bg-[#721C3D] text-white text-xs font-bold rounded-[4px] shadow-sm flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+              >
+                <Calculator className="w-4 h-4" />
+                Apply Changes &amp; Recalculate
+              </button>
+            )}
             <div className="p-6 bg-white card-dev27 shadow-xl rounded-[4px] border border-slate-200/90 relative overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#8A244B]" />
               <span className="text-xs text-slate-500 font-bold uppercase tracking-wider block mb-1">

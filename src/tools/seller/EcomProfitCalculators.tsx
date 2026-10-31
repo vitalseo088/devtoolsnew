@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DollarSign, Percent, TrendingUp, AlertCircle, RefreshCw, Layers, Copy, Check } from 'lucide-react';
+import { DollarSign, Percent, TrendingUp, AlertCircle, RefreshCw, Layers, Copy, Check, Calculator } from 'lucide-react';
 
 interface EcomCalcProps {
   platform: 'etsy' | 'amazon' | 'ebay' | 'shopify' | 'comparison';
@@ -43,66 +43,148 @@ export const EcomProfitCalculator: React.FC<EcomCalcProps> = ({ platform }) => {
   const [shopifyGatewayFixed, setShopifyGatewayFixed] = useState<number>(0.30);
   const [shopifyPlanAlloc, setShopifyPlanAlloc] = useState<number>(0.80);
 
-  // Financial calculations
-  const totalRevenuePerUnit = sellingPrice + shippingCharged;
-  const grossRevenue = totalRevenuePerUnit * quantitySold;
+  // State to hold applied values for output calculation
+  const [applied, setApplied] = useState({
+    sellingPrice,
+    productCost,
+    shippingCharged,
+    actualShippingCost,
+    packagingCost,
+    adSpend,
+    quantitySold,
+    etsyListingFee,
+    etsyTransactionPct,
+    etsyProcessingPct,
+    etsyProcessingFixed,
+    etsyOffsiteAds,
+    etsyOffsitePct,
+    amazonFulfillmentMode,
+    amazonReferralPct,
+    amazonFbaFee,
+    amazonStorageFee,
+    amazonInboundShipping,
+    ebayFinalValuePct,
+    ebayPerOrderFee,
+    ebayPromotedPct,
+    shopifyGatewayPct,
+    shopifyGatewayFixed,
+    shopifyPlanAlloc,
+  });
+
+  const hasChanges =
+    sellingPrice !== applied.sellingPrice ||
+    productCost !== applied.productCost ||
+    shippingCharged !== applied.shippingCharged ||
+    actualShippingCost !== applied.actualShippingCost ||
+    packagingCost !== applied.packagingCost ||
+    adSpend !== applied.adSpend ||
+    quantitySold !== applied.quantitySold ||
+    amazonFulfillmentMode !== applied.amazonFulfillmentMode ||
+    etsyListingFee !== applied.etsyListingFee ||
+    etsyTransactionPct !== applied.etsyTransactionPct ||
+    etsyProcessingPct !== applied.etsyProcessingPct ||
+    etsyProcessingFixed !== applied.etsyProcessingFixed ||
+    etsyOffsiteAds !== applied.etsyOffsiteAds ||
+    etsyOffsitePct !== applied.etsyOffsitePct ||
+    amazonReferralPct !== applied.amazonReferralPct ||
+    amazonFbaFee !== applied.amazonFbaFee ||
+    amazonStorageFee !== applied.amazonStorageFee ||
+    amazonInboundShipping !== applied.amazonInboundShipping ||
+    ebayFinalValuePct !== applied.ebayFinalValuePct ||
+    ebayPerOrderFee !== applied.ebayPerOrderFee ||
+    ebayPromotedPct !== applied.ebayPromotedPct ||
+    shopifyGatewayPct !== applied.shopifyGatewayPct ||
+    shopifyGatewayFixed !== applied.shopifyGatewayFixed ||
+    shopifyPlanAlloc !== applied.shopifyPlanAlloc;
+
+  const handleCalculate = () => {
+    setApplied({
+      sellingPrice,
+      productCost,
+      shippingCharged,
+      actualShippingCost,
+      packagingCost,
+      adSpend,
+      quantitySold,
+      etsyListingFee,
+      etsyTransactionPct,
+      etsyProcessingPct,
+      etsyProcessingFixed,
+      etsyOffsiteAds,
+      etsyOffsitePct,
+      amazonFulfillmentMode,
+      amazonReferralPct,
+      amazonFbaFee,
+      amazonStorageFee,
+      amazonInboundShipping,
+      ebayFinalValuePct,
+      ebayPerOrderFee,
+      ebayPromotedPct,
+      shopifyGatewayPct,
+      shopifyGatewayFixed,
+      shopifyPlanAlloc,
+    });
+  };
+
+  // Financial calculations from applied state
+  const totalRevenuePerUnit = applied.sellingPrice + applied.shippingCharged;
+  const grossRevenue = totalRevenuePerUnit * applied.quantitySold;
 
   // Platform specific fee computation
   let platformFeePerUnit = 0;
   const feeBreakdown: { label: string; amount: number }[] = [];
 
   if (platform === 'etsy') {
-    const listFee = etsyListingFee;
-    const transFee = totalRevenuePerUnit * (etsyTransactionPct / 100);
-    const procFee = totalRevenuePerUnit * (etsyProcessingPct / 100) + etsyProcessingFixed;
-    const offsiteFee = etsyOffsiteAds ? totalRevenuePerUnit * (etsyOffsitePct / 100) : 0;
+    const listFee = applied.etsyListingFee;
+    const transFee = totalRevenuePerUnit * (applied.etsyTransactionPct / 100);
+    const procFee = totalRevenuePerUnit * (applied.etsyProcessingPct / 100) + applied.etsyProcessingFixed;
+    const offsiteFee = applied.etsyOffsiteAds ? totalRevenuePerUnit * (applied.etsyOffsitePct / 100) : 0;
 
     platformFeePerUnit = listFee + transFee + procFee + offsiteFee;
     feeBreakdown.push({ label: 'Listing Fee', amount: listFee });
-    feeBreakdown.push({ label: `Transaction Fee (${etsyTransactionPct}%)`, amount: transFee });
-    feeBreakdown.push({ label: `Payment Processing (${etsyProcessingPct}% + $${etsyProcessingFixed})`, amount: procFee });
-    if (etsyOffsiteAds) feeBreakdown.push({ label: `Offsite Ads (${etsyOffsitePct}%)`, amount: offsiteFee });
+    feeBreakdown.push({ label: `Transaction Fee (${applied.etsyTransactionPct}%)`, amount: transFee });
+    feeBreakdown.push({ label: `Payment Processing (${applied.etsyProcessingPct}% + $${applied.etsyProcessingFixed})`, amount: procFee });
+    if (applied.etsyOffsiteAds) feeBreakdown.push({ label: `Offsite Ads (${applied.etsyOffsitePct}%)`, amount: offsiteFee });
   } else if (platform === 'amazon') {
-    const referral = sellingPrice * (amazonReferralPct / 100);
+    const referral = applied.sellingPrice * (applied.amazonReferralPct / 100);
     let fbaTotal = 0;
-    if (amazonFulfillmentMode === 'fba') {
-      fbaTotal = amazonFbaFee + amazonStorageFee + amazonInboundShipping;
-      feeBreakdown.push({ label: `Referral Fee (${amazonReferralPct}%)`, amount: referral });
-      feeBreakdown.push({ label: 'FBA Pick & Pack Fee', amount: amazonFbaFee });
-      feeBreakdown.push({ label: 'Storage Fee (est.)', amount: amazonStorageFee });
-      feeBreakdown.push({ label: 'Inbound Shipping', amount: amazonInboundShipping });
+    if (applied.amazonFulfillmentMode === 'fba') {
+      fbaTotal = applied.amazonFbaFee + applied.amazonStorageFee + applied.amazonInboundShipping;
+      feeBreakdown.push({ label: `Referral Fee (${applied.amazonReferralPct}%)`, amount: referral });
+      feeBreakdown.push({ label: 'FBA Pick & Pack Fee', amount: applied.amazonFbaFee });
+      feeBreakdown.push({ label: 'Storage Fee (est.)', amount: applied.amazonStorageFee });
+      feeBreakdown.push({ label: 'Inbound Shipping', amount: applied.amazonInboundShipping });
     } else {
-      feeBreakdown.push({ label: `Referral Fee (${amazonReferralPct}%)`, amount: referral });
+      feeBreakdown.push({ label: `Referral Fee (${applied.amazonReferralPct}%)`, amount: referral });
     }
     platformFeePerUnit = referral + fbaTotal;
   } else if (platform === 'ebay') {
-    const fvf = totalRevenuePerUnit * (ebayFinalValuePct / 100);
-    const promoted = totalRevenuePerUnit * (ebayPromotedPct / 100);
-    platformFeePerUnit = fvf + ebayPerOrderFee + promoted;
-    feeBreakdown.push({ label: `Final Value Fee (${ebayFinalValuePct}%)`, amount: fvf });
-    feeBreakdown.push({ label: 'Per Order Charge', amount: ebayPerOrderFee });
-    feeBreakdown.push({ label: `Promoted Listing (${ebayPromotedPct}%)`, amount: promoted });
+    const fvf = totalRevenuePerUnit * (applied.ebayFinalValuePct / 100);
+    const promoted = totalRevenuePerUnit * (applied.ebayPromotedPct / 100);
+    platformFeePerUnit = fvf + applied.ebayPerOrderFee + promoted;
+    feeBreakdown.push({ label: `Final Value Fee (${applied.ebayFinalValuePct}%)`, amount: fvf });
+    feeBreakdown.push({ label: 'Per Order Charge', amount: applied.ebayPerOrderFee });
+    feeBreakdown.push({ label: `Promoted Listing (${applied.ebayPromotedPct}%)`, amount: promoted });
   } else if (platform === 'shopify') {
-    const gateway = totalRevenuePerUnit * (shopifyGatewayPct / 100) + shopifyGatewayFixed;
-    platformFeePerUnit = gateway + shopifyPlanAlloc;
-    feeBreakdown.push({ label: `Payment Gateway (${shopifyGatewayPct}% + $${shopifyGatewayFixed})`, amount: gateway });
-    feeBreakdown.push({ label: 'Store Subscription Allocation', amount: shopifyPlanAlloc });
+    const gateway = totalRevenuePerUnit * (applied.shopifyGatewayPct / 100) + applied.shopifyGatewayFixed;
+    platformFeePerUnit = gateway + applied.shopifyPlanAlloc;
+    feeBreakdown.push({ label: `Payment Gateway (${applied.shopifyGatewayPct}% + $${applied.shopifyGatewayFixed})`, amount: gateway });
+    feeBreakdown.push({ label: 'Store Subscription Allocation', amount: applied.shopifyPlanAlloc });
   } else if (platform === 'comparison') {
-    // Average or primary
     const estFee = totalRevenuePerUnit * 0.12 + 0.30;
     platformFeePerUnit = estFee;
     feeBreakdown.push({ label: 'Estimated Average Platform Fee', amount: estFee });
   }
 
-  const shippingExpense = (platform === 'amazon' && amazonFulfillmentMode === 'fba') ? 0 : actualShippingCost;
-  const totalExpensesPerUnit = productCost + packagingCost + shippingExpense + adSpend + platformFeePerUnit;
+  const shippingExpense = (platform === 'amazon' && applied.amazonFulfillmentMode === 'fba') ? 0 : applied.actualShippingCost;
+  const totalExpensesPerUnit = applied.productCost + applied.packagingCost + shippingExpense + applied.adSpend + platformFeePerUnit;
   const netProfitPerUnit = totalRevenuePerUnit - totalExpensesPerUnit;
-  const totalNetProfit = netProfitPerUnit * quantitySold;
+  const totalNetProfit = netProfitPerUnit * applied.quantitySold;
   const profitMarginPct = totalRevenuePerUnit > 0 ? (netProfitPerUnit / totalRevenuePerUnit) * 100 : 0;
-  const markupPct = productCost > 0 ? (netProfitPerUnit / productCost) * 100 : 0;
+  const markupPct = applied.productCost > 0 ? (netProfitPerUnit / applied.productCost) * 100 : 0;
   const roiPct = totalExpensesPerUnit > 0 ? (netProfitPerUnit / totalExpensesPerUnit) * 100 : 0;
 
-  const breakEvenPrice = Math.max(0, (totalExpensesPerUnit - platformFeePerUnit - shippingCharged) * 1.25);
+  const breakEvenPrice = Math.max(0, (totalExpensesPerUnit - platformFeePerUnit - applied.shippingCharged) * 1.25);
 
   const titles: Record<string, string> = {
     etsy: 'Etsy Seller Profit & Fee Calculator',
@@ -497,10 +579,38 @@ Break-Even Price: ${currency}${breakEvenPrice.toFixed(2)}`;
               </div>
             )}
           </div>
+
+          {/* Action button to calculate */}
+          <div className="p-4 bg-white card-dev27 shadow-md rounded-[4px] border border-slate-200/90">
+            <button
+              type="button"
+              onClick={handleCalculate}
+              className="w-full py-3 px-5 text-sm font-extrabold rounded-[4px] shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-all bg-[#8A244B] hover:bg-[#721C3D] text-white"
+            >
+              <Calculator className="w-4 h-4" />
+              {hasChanges ? 'Apply & Calculate Profit' : 'Calculate Profit'}
+            </button>
+            {hasChanges && (
+              <p className="text-xs text-amber-800 font-semibold text-center mt-2 bg-amber-50 border border-amber-200 py-1.5 px-2 rounded-[4px]">
+                Inputs modified. Click "Apply & Calculate Profit" to update results.
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Right Column: Output Layout with Easy-to-Read Highlights */}
         <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-4">
+          {hasChanges && (
+            <button
+              type="button"
+              onClick={handleCalculate}
+              className="w-full py-2.5 px-4 bg-[#8A244B] hover:bg-[#721C3D] text-white text-xs font-bold rounded-[4px] shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-colors"
+            >
+              <Calculator className="w-4 h-4" />
+              Apply Changes &amp; Recalculate
+            </button>
+          )}
+
           {/* Hero Highlight Card */}
           <div className="p-6 bg-white card-dev27 shadow-xl rounded-[4px] border border-slate-200/90 relative overflow-hidden">
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#8A244B]" />

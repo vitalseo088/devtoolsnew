@@ -202,15 +202,18 @@ export const SqlFormatter: React.FC = () => {
           </div>
           <textarea
             value={sqlInput}
-            onChange={(e) => {
-              setSqlInput(e.target.value);
-              formatQuery(e.target.value, false);
-            }}
+            onChange={(e) => setSqlInput(e.target.value)}
             placeholder="Type or paste SQL queries here..."
-            rows={16}
+            rows={14}
             className="w-full font-mono text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-[4px] focus:outline-none focus:border-[#8A244B] resize-y"
             spellCheck={false}
           />
+          <button
+            onClick={() => formatQuery(sqlInput, false)}
+            className="mt-3 w-full py-2.5 bg-[#8A244B] hover:bg-[#721C3D] text-white text-xs font-bold rounded-[4px] shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-colors"
+          >
+            Format SQL Query
+          </button>
         </div>
 
         <div className="flex flex-col card-dev27 p-3 bg-white">

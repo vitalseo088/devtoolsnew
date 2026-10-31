@@ -54,26 +54,63 @@ export const DisplayCalculators: React.FC<Props> = ({ tool }) => {
     return () => window.removeEventListener('keydown', handleKey);
   }, [tool, isFullscreen]);
 
-  // Screen Size Math
-  const [arW, arH] = aspectRatioStr.split(':').map(Number);
+  const [applied, setApplied] = useState({
+    diagonalInches,
+    aspectRatioStr,
+    unitMetric,
+    arWidth,
+    arHeight,
+    targetWidth,
+    ppiDiag,
+    resH,
+    resV,
+  });
+
+  const hasChanges =
+    diagonalInches !== applied.diagonalInches ||
+    aspectRatioStr !== applied.aspectRatioStr ||
+    unitMetric !== applied.unitMetric ||
+    arWidth !== applied.arWidth ||
+    arHeight !== applied.arHeight ||
+    targetWidth !== applied.targetWidth ||
+    ppiDiag !== applied.ppiDiag ||
+    resH !== applied.resH ||
+    resV !== applied.resV;
+
+  const handleCalculate = () => {
+    setApplied({
+      diagonalInches,
+      aspectRatioStr,
+      unitMetric,
+      arWidth,
+      arHeight,
+      targetWidth,
+      ppiDiag,
+      resH,
+      resV,
+    });
+  };
+
+  // Screen Size Math from applied state
+  const [arW, arH] = applied.aspectRatioStr.split(':').map(Number);
   const angle = Math.atan((arH || 9) / (arW || 16));
-  const calcWidthIn = diagonalInches * Math.cos(angle);
-  const calcHeightIn = diagonalInches * Math.sin(angle);
+  const calcWidthIn = applied.diagonalInches * Math.cos(angle);
+  const calcHeightIn = applied.diagonalInches * Math.sin(angle);
   const calcAreaSqIn = calcWidthIn * calcHeightIn;
   const calcWidthCm = calcWidthIn * 2.54;
   const calcHeightCm = calcHeightIn * 2.54;
   const calcAreaSqCm = calcWidthCm * calcHeightCm;
 
-  // Aspect Ratio GCD Simplifier
+  // Aspect Ratio GCD Simplifier from applied state
   const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
-  const divisor = gcd(Math.round(arWidth), Math.round(arHeight));
-  const simplifiedRatio = divisor > 0 ? `${Math.round(arWidth / divisor)}:${Math.round(arHeight / divisor)}` : '16:9';
-  const computedTargetHeight = arWidth > 0 ? Math.round((targetWidth * arHeight) / arWidth) : 0;
+  const divisor = gcd(Math.round(applied.arWidth), Math.round(applied.arHeight));
+  const simplifiedRatio = divisor > 0 ? `${Math.round(applied.arWidth / divisor)}:${Math.round(applied.arHeight / divisor)}` : '16:9';
+  const computedTargetHeight = applied.arWidth > 0 ? Math.round((applied.targetWidth * applied.arHeight) / applied.arWidth) : 0;
 
-  // PPI Math
-  const diagonalPixels = Math.sqrt(Math.pow(resH, 2) + Math.pow(resV, 2));
-  const calculatedPpi = ppiDiag > 0 ? diagonalPixels / ppiDiag : 0;
-  const totalPixels = resH * resV;
+  // PPI Math from applied state
+  const diagonalPixels = Math.sqrt(Math.pow(applied.resH, 2) + Math.pow(applied.resV, 2));
+  const calculatedPpi = applied.ppiDiag > 0 ? diagonalPixels / applied.ppiDiag : 0;
+  const totalPixels = applied.resH * applied.resV;
   const dotPitchMm = calculatedPpi > 0 ? (25.4 / calculatedPpi).toFixed(4) : '0';
 
   const titles = {
@@ -366,10 +403,37 @@ export const DisplayCalculators: React.FC<Props> = ({ tool }) => {
               </div>
             )}
           </div>
+
+          {/* Action button to calculate */}
+          <div className="p-4 bg-white card-dev27 shadow-md rounded-[4px] border border-slate-200/90">
+            <button
+              type="button"
+              onClick={handleCalculate}
+              className="w-full py-3 px-5 text-sm font-extrabold rounded-[4px] shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-all bg-[#8A244B] hover:bg-[#721C3D] text-white"
+            >
+              <Monitor className="w-4 h-4" />
+              {hasChanges ? 'Apply & Calculate Specs' : 'Calculate Specs'}
+            </button>
+            {hasChanges && (
+              <p className="text-xs text-amber-800 font-semibold text-center mt-2 bg-amber-50 border border-amber-200 py-1.5 px-2 rounded-[4px]">
+                Specifications modified. Click "Apply & Calculate Specs" to update display metrics.
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Right Column: Output Layout with Easy-to-Read Highlights */}
         <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-4">
+          {hasChanges && (
+            <button
+              type="button"
+              onClick={handleCalculate}
+              className="w-full py-2.5 px-4 bg-[#8A244B] hover:bg-[#721C3D] text-white text-xs font-bold rounded-[4px] shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-colors"
+            >
+              <Monitor className="w-4 h-4" />
+              Apply Changes &amp; Recalculate
+            </button>
+          )}
           {tool === 'screen-size' && (
             <div className="p-6 bg-white card-dev27 shadow-xl rounded-[4px] border border-slate-200/90 relative overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#8A244B]" />
