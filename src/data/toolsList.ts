@@ -44,12 +44,12 @@ import { ConstructionCalculators } from '../tools/construction/ConstructionCalcu
 import { PetNameGenerators } from '../tools/pets/PetNameGenerators';
 
 export const CATEGORIES: CategoryInfo[] = [
-  { id: 'developer', name: 'Developer Tools', description: 'Code formatters, serializable data converters, binary parsers & slicers.', icon: 'Code2' },
-  { id: 'creator', name: 'Creator & Podcast', description: 'Name, title, script generators, schedule planners & Twitch canvas panels.', icon: 'Mic' },
+  { id: 'developer', name: 'Developer', description: 'Code formatters, serializable data converters, binary parsers & slicers.', icon: 'Code2' },
+  { id: 'creator', name: 'Creator', description: 'Name, title, script generators, schedule planners & Twitch canvas panels.', icon: 'Mic' },
   { id: 'seller', name: 'Ecommerce', description: 'Financial fee estimators, FBA profit calculators & retail markup models.', icon: 'ShoppingBag' },
   { id: 'productivity', name: 'Productivity', description: 'Accurate timers, wage calculators, habit builders, display tests & palettes.', icon: 'CheckSquare' },
-  { id: 'construction', name: 'Construction Calculators', description: 'Material estimations, stair codes, concrete yardage, roof pitches & gravel.', icon: 'HardHat' },
-  { id: 'pets', name: 'Pet Name Generators', description: 'Breed-aware naming tools with meanings for dogs, cats, horses, bunnies & birds.', icon: 'PawPrint' },
+  { id: 'construction', name: 'Construction', description: 'Material estimations, stair codes, concrete yardage, roof pitches & gravel.', icon: 'HardHat' },
+  { id: 'pets', name: 'Pet Names', description: 'Breed-aware naming tools with meanings for dogs, cats, horses, bunnies & birds.', icon: 'PawPrint' },
 ];
 
 export const TOOLS: ToolDefinition[] = [
