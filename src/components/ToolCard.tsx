@@ -20,26 +20,26 @@ export const ToolCard: React.FC<ToolCardProps> = ({ tool, onSelect }) => {
           </span>
         </div>
 
-        <h3 className="text-lg sm:text-xl font-extrabold text-[#111F35] group-hover:text-[#8A244B] transition-colors mb-2.5 leading-snug">
+        <h3 className="text-base sm:text-lg font-bold text-[#111F35] group-hover:text-[#8A244B] transition-colors mb-2 leading-snug">
           {tool.name}
         </h3>
 
-        <p className="text-base text-slate-600 line-clamp-2 leading-relaxed">
+        <p className="text-xs sm:text-sm text-slate-600 line-clamp-2 leading-relaxed">
           {tool.shortDesc}
         </p>
       </div>
 
-      <div className="mt-5 pt-3.5 border-t border-slate-100">
+      <div className="mt-4 pt-3 border-t border-slate-100">
         <button
           type="button"
           onClick={(e) => {
             e.stopPropagation();
             onSelect(tool.id);
           }}
-          className="w-full py-3 px-5 rounded-[4px] bg-[#8A244B] hover:bg-[#721C3D] text-white font-extrabold text-base tracking-wide flex items-center justify-center gap-2 transition-all shadow-[0_4px_12px_rgba(138,36,75,0.25)] group-hover:shadow-[0_6px_18px_rgba(138,36,75,0.38)] cursor-pointer"
+          className="w-full py-2 px-3 rounded-[4px] bg-[#8A244B] hover:bg-[#721C3D] text-white font-bold text-xs sm:text-sm tracking-wide flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer"
         >
           <span>Open Tool</span>
-          <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+          <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
         </button>
       </div>
     </div>

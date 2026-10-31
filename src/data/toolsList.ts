@@ -44,12 +44,12 @@ import { ConstructionCalculators } from '../tools/construction/ConstructionCalcu
 import { PetNameGenerators } from '../tools/pets/PetNameGenerators';
 
 export const CATEGORIES: CategoryInfo[] = [
-  { id: 'developer', name: 'Developer', description: 'Code formatters, serializable data converters, binary parsers & slicers.', icon: 'Code2' },
-  { id: 'creator', name: 'Creator', description: 'Name, title, script generators, schedule planners & Twitch canvas panels.', icon: 'Mic' },
-  { id: 'seller', name: 'Ecommerce', description: 'Financial fee estimators, FBA profit calculators & retail markup models.', icon: 'ShoppingBag' },
-  { id: 'productivity', name: 'Productivity', description: 'Accurate timers, wage calculators, habit builders, display tests & palettes.', icon: 'CheckSquare' },
-  { id: 'construction', name: 'Construction', description: 'Material estimations, stair codes, concrete yardage, roof pitches & gravel.', icon: 'HardHat' },
-  { id: 'pets', name: 'Pet Names', description: 'Breed-aware naming tools with meanings for dogs, cats, horses, bunnies & birds.', icon: 'PawPrint' },
+  { id: 'developer', name: 'Developer', description: 'High-speed browser utilities for code formatting, data structure conversions (YAML, JSON, CSV), cron syntax generation, regex debugging, and Unix timestamp parsing.', icon: 'Code2' },
+  { id: 'creator', name: 'Creator', description: 'Audience growth and content creation tools including YouTube chapter generators, podcast name & episode title builders, teleprompter script makers, and Twitch stream planners.', icon: 'Mic' },
+  { id: 'seller', name: 'Ecommerce', description: 'Profitability and fee calculators tailored for Etsy, Amazon FBA, eBay, and Shopify sellers, including pricing break-even models, wholesale margins, and retail markup tools.', icon: 'ShoppingBag' },
+  { id: 'productivity', name: 'Productivity', description: 'Workplace efficiency tools featuring overtime wage estimators, freelance rate calculators, habit streak trackers, display PPI metrics, and customizable focus timers.', icon: 'CheckSquare' },
+  { id: 'construction', name: 'Construction', description: 'Jobsite material estimators and structural calculators for stair risers, concrete volume, gravel weight, roof pitch rafters, drywall sheet coverage, and fence framing.', icon: 'HardHat' },
+  { id: 'pets', name: 'Pet Names', description: 'Smart breed-aware name generators with origin meanings, character traits, and creative theme filters for dogs, cats, horses, bunnies, and birds.', icon: 'PawPrint' },
 ];
 
 export const TOOLS: ToolDefinition[] = [

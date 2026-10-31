@@ -117,10 +117,10 @@ export default function App() {
                       <section key={cat.id} className="space-y-4">
                         <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                           <div>
-                            <h2 className="text-xl sm:text-2xl font-extrabold text-[#111F35]">
+                            <h2 className="text-lg sm:text-xl font-extrabold text-[#111F35]">
                               {cat.name}
                             </h2>
-                            <p className="text-base text-slate-500 mt-1">
+                            <p className="text-xs sm:text-sm text-slate-500 mt-0.5 leading-relaxed">
                               {cat.description}
                             </p>
                           </div>

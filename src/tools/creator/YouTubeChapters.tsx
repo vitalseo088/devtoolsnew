@@ -9,13 +9,7 @@ interface Chapter {
 }
 
 export const YouTubeChapterGenerator: React.FC = () => {
-  const [chapters, setChapters] = useState<Chapter[]>([
-    { id: '1', timeStr: '00:00', seconds: 0, title: 'Introduction & Overview' },
-    { id: '2', timeStr: '01:45', seconds: 105, title: 'Core Architectural Concepts' },
-    { id: '3', timeStr: '05:30', seconds: 330, title: 'Live Coding Implementation' },
-    { id: '4', timeStr: '11:15', seconds: 675, title: 'Benchmarking & Performance' },
-    { id: '5', timeStr: '16:00', seconds: 960, title: 'Final Summary & Next Steps' },
-  ]);
+  const [chapters, setChapters] = useState<Chapter[]>([]);
   const [pasteInput, setPasteInput] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
 
@@ -176,33 +170,39 @@ export const YouTubeChapterGenerator: React.FC = () => {
             </div>
 
             <div className="space-y-2">
-              {chapters.map((c, idx) => (
-                <div key={c.id} className="flex items-center gap-2 p-2.5 bg-slate-50 border border-slate-200 rounded-[4px]">
-                  <span className="text-xs font-mono font-bold text-slate-400 w-6 text-center">{idx + 1}</span>
-                  <input
-                    type="text"
-                    value={c.timeStr}
-                    onChange={(e) => updateChapter(c.id, 'timeStr', e.target.value)}
-                    placeholder="00:00"
-                    className="w-24 font-mono text-xs p-2 border border-slate-300 rounded-[4px] bg-white text-center font-bold text-[#8A244B] focus:border-[#8A244B]"
-                  />
-                  <input
-                    type="text"
-                    value={c.title}
-                    onChange={(e) => updateChapter(c.id, 'title', e.target.value)}
-                    placeholder="Chapter title..."
-                    className="flex-1 text-xs p-2 border border-slate-300 rounded-[4px] bg-white font-medium focus:border-[#8A244B]"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => deleteChapter(c.id)}
-                    className="p-1.5 text-slate-400 hover:text-red-700 cursor-pointer"
-                    title="Remove"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+              {chapters.length === 0 ? (
+                <div className="p-6 text-center text-slate-400 text-xs italic bg-slate-50 rounded-[4px] border border-dashed border-slate-200">
+                  No chapters added yet. Click &quot;Add Timestamp&quot; above or paste a transcript to begin.
                 </div>
-              ))}
+              ) : (
+                chapters.map((c, idx) => (
+                  <div key={c.id} className="flex items-center gap-2 p-2.5 bg-slate-50 border border-slate-200 rounded-[4px]">
+                    <span className="text-xs font-mono font-bold text-slate-400 w-6 text-center">{idx + 1}</span>
+                    <input
+                      type="text"
+                      value={c.timeStr}
+                      onChange={(e) => updateChapter(c.id, 'timeStr', e.target.value)}
+                      placeholder="00:00"
+                      className="w-24 font-mono text-xs p-2 border border-slate-300 rounded-[4px] bg-white text-center font-bold text-[#8A244B] focus:border-[#8A244B]"
+                    />
+                    <input
+                      type="text"
+                      value={c.title}
+                      onChange={(e) => updateChapter(c.id, 'title', e.target.value)}
+                      placeholder="Chapter title..."
+                      className="flex-1 text-xs p-2 border border-slate-300 rounded-[4px] bg-white font-medium focus:border-[#8A244B]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => deleteChapter(c.id)}
+                      className="p-1.5 text-slate-400 hover:text-red-700 cursor-pointer"
+                      title="Remove"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))
+              )}
             </div>
           </div>
 

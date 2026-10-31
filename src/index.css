@@ -27,7 +27,7 @@
     font-weight: 700;
   }
 
-  /* Increase tool form control font size */
+  /* Tool form control font size */
   input[type="text"],
   input[type="number"],
   input[type="date"],
@@ -35,7 +35,7 @@
   input[type="datetime-local"],
   select,
   textarea {
-    font-size: 1.05rem !important; /* ~19px */
+    font-size: 0.875rem !important; /* 14px */
   }
 }
 
@@ -56,38 +56,38 @@
 
 /* Typography enhancements for tools and elements */
 .card-dev27 label {
-  font-size: 0.95rem; /* ~17px */
+  font-size: 0.8125rem; /* 13px */
 }
 
 .card-dev27 button {
-  font-size: 0.95rem; /* ~17px */
+  font-size: 0.8125rem; /* 13px */
 }
 
 .card-dev27 .text-xs {
-  font-size: 0.95rem; /* scale up text-xs inside tools to ~17px */
-  line-height: 1.5rem;
+  font-size: 0.8125rem; /* 13px */
+  line-height: 1.35rem;
 }
 
 .card-dev27 .text-\[11px\],
 .card-dev27 .text-\[10px\] {
-  font-size: 0.875rem; /* scale up micro text to ~15.7px */
-  line-height: 1.35rem;
+  font-size: 0.75rem; /* 12px */
+  line-height: 1.15rem;
 }
 
 .card-dev27 .text-sm {
-  font-size: 1.05rem; /* ~19px */
+  font-size: 0.875rem; /* 14px */
 }
 
 .card-dev27 .text-base {
-  font-size: 1.15rem; /* ~20.7px */
+  font-size: 0.9375rem; /* 15px */
 }
 
 .card-dev27 .text-lg {
-  font-size: 1.35rem; /* ~24.3px */
+  font-size: 1.05rem; /* ~17px */
 }
 
 .card-dev27 .text-xl {
-  font-size: 1.55rem; /* ~28px */
+  font-size: 1.2rem; /* ~19px */
 }
 
 .card-dev27 .text-2xl {
