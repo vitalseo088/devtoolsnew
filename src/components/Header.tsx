@@ -30,12 +30,12 @@ export const Header: React.FC<HeaderProps> = ({ currentCategory, onSelectCategor
       {/* Simple Navigation Bar Below Logo */}
       <nav className="bg-[#111F35] text-white shadow-sm">
         <div className="app-container">
-          <div className="flex items-center justify-center flex-wrap py-2 gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold">
+          <div className="flex items-center justify-center flex-wrap py-2 gap-1.5 sm:gap-2 text-sm font-semibold">
             <button
               onClick={() => onSelectCategory('all')}
-              className={`px-3 py-1.5 rounded-[4px] transition-colors whitespace-nowrap cursor-pointer text-xs sm:text-sm font-bold ${
+              className={`px-3 py-1.5 rounded-[4px] transition-colors whitespace-nowrap cursor-pointer text-sm font-semibold ${
                 currentCategory === 'all'
-                  ? 'bg-[#8A244B] text-white'
+                  ? 'bg-[#8A244B] text-white shadow-sm'
                   : 'text-slate-300 hover:text-white hover:bg-white/10'
               }`}
             >
@@ -45,9 +45,9 @@ export const Header: React.FC<HeaderProps> = ({ currentCategory, onSelectCategor
               <button
                 key={cat.id}
                 onClick={() => onSelectCategory(cat.id)}
-                className={`px-3 py-1.5 rounded-[4px] transition-colors whitespace-nowrap cursor-pointer text-xs sm:text-sm font-bold ${
+                className={`px-3 py-1.5 rounded-[4px] transition-colors whitespace-nowrap cursor-pointer text-sm font-semibold ${
                   currentCategory === cat.id
-                    ? 'bg-[#8A244B] text-white'
+                    ? 'bg-[#8A244B] text-white shadow-sm'
                     : 'text-slate-300 hover:text-white hover:bg-white/10'
                 }`}
               >

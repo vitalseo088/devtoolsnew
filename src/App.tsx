@@ -5,25 +5,31 @@ import { ToolCard } from './components/ToolCard';
 import { ToolPageWrapper } from './components/ToolPageWrapper';
 import { Footer } from './components/Footer';
 import { CATEGORIES, TOOLS } from './data/toolsList';
-import { ToolCategory, ToolDefinition } from './types';
-import { Search } from 'lucide-react';
+import { Search, ArrowRight } from 'lucide-react';
 
 export default function App() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [activeToolId, setActiveToolId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  // Handle URL hash routing (e.g., #yaml-to-json, #cron-generator)
+  // Handle URL hash routing (e.g., #yaml-to-json, #category-developer)
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace('#', '').trim();
-      if (hash) {
-        const found = TOOLS.find(t => t.id === hash);
-        if (found) {
-          setActiveToolId(found.id);
-        } else {
-          setActiveToolId(null);
-        }
+      if (!hash) {
+        setActiveToolId(null);
+        return;
+      }
+      if (hash.startsWith('category-')) {
+        const catId = hash.replace('category-', '');
+        setSelectedCategory(catId);
+        setActiveToolId(null);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      const found = TOOLS.find(t => t.id === hash);
+      if (found) {
+        setActiveToolId(found.id);
       } else {
         setActiveToolId(null);
       }
@@ -37,6 +43,13 @@ export default function App() {
   const selectTool = (toolId: string) => {
     window.location.hash = toolId;
     setActiveToolId(toolId);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navigateToCategory = (catId: string) => {
+    setSelectedCategory(catId);
+    window.location.hash = `category-${catId}`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const goHome = () => {
@@ -44,9 +57,11 @@ export default function App() {
     setActiveToolId(null);
     setSelectedCategory('all');
     setSearchQuery('');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const activeTool = activeToolId ? TOOLS.find(t => t.id === activeToolId) : null;
+  const currentCategoryInfo = selectedCategory !== 'all' ? CATEGORIES.find(c => c.id === selectedCategory) : null;
 
   // Filter tools for directory view
   const filteredTools = TOOLS.filter((t) => {
@@ -65,10 +80,15 @@ export default function App() {
         currentCategory={selectedCategory}
         onSelectCategory={(cat) => {
           setSelectedCategory(cat);
-          if (activeToolId) {
+          if (cat === 'all') {
             window.location.hash = '';
+          } else {
+            window.location.hash = `category-${cat}`;
+          }
+          if (activeToolId) {
             setActiveToolId(null);
           }
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         onGoHome={goHome}
       />
@@ -83,12 +103,16 @@ export default function App() {
             />
           </div>
         ) : (
-          /* Homepage with Simple Hero and Category-Wise Tool Cards */
+          /* Homepage or Category Page */
           <>
-            {/* Simple Hero Section: Strictly heading and description only */}
-            <Hero />
+            {/* Top Heading & Description: Category-specific when viewing a category, or general when on homepage */}
+            <Hero
+              category={currentCategoryInfo}
+              toolCount={selectedCategory !== 'all' ? filteredTools.length : undefined}
+              onGoHome={goHome}
+            />
 
-            {/* Category Wise Tools Cards Section */}
+            {/* Main Tools Section */}
             <div className="app-container py-8">
               {/* Search and Category Filter Toolbar */}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mb-8 p-5 bg-white card-dev27 shadow-md">
@@ -98,39 +122,60 @@ export default function App() {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search across all 69 online tools..."
-                    className="w-full pl-12 pr-4 py-3 text-base border border-slate-300 rounded-[4px] bg-slate-50 focus:bg-white focus:outline-none focus:border-[#8A244B]"
+                    placeholder={
+                      currentCategoryInfo
+                        ? `Search within ${currentCategoryInfo.name}...`
+                        : "Search across all 69 online tools..."
+                    }
+                    className="w-full pl-12 pr-4 py-3 text-base border border-[#111F35] rounded-[4px] bg-white focus:bg-white focus:outline-none focus:border-[#8A244B] focus:ring-1 focus:ring-[#8A244B]"
                   />
                 </div>
 
                 <div className="text-base text-slate-600 font-semibold shrink-0">
-                  Showing <strong className="text-slate-900 font-extrabold">{filteredTools.length}</strong> of {TOOLS.length} utilities
+                  Showing <strong className="text-slate-900 font-extrabold">{filteredTools.length}</strong> of {selectedCategory === 'all' ? TOOLS.length : TOOLS.filter(t => t.category === selectedCategory).length} utilities
                 </div>
               </div>
 
-              {/* Grouped Category Sections */}
+              {/* Grouped Category Sections for Homepage */}
               {selectedCategory === 'all' && !searchQuery.trim() ? (
                 <div className="space-y-12">
                   {CATEGORIES.map((cat) => {
                     const categoryTools = TOOLS.filter(t => t.category === cat.id);
                     return (
                       <section key={cat.id} className="space-y-4">
-                        <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                          <div>
-                            <h2 className="text-lg sm:text-xl font-extrabold text-[#111F35]">
-                              {cat.name}
+                        {/* Category Header with unique title & description and view all tools link */}
+                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 border-b border-slate-200 pb-3">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-xs font-bold uppercase tracking-wider text-[#8A244B] bg-[#F2EFE7] px-2.5 py-0.5 rounded-[4px]">
+                                {cat.name}
+                              </span>
+                              <span className="text-xs font-mono text-slate-500 font-semibold">
+                                {categoryTools.length} tools
+                              </span>
+                            </div>
+                            <h2 className="text-lg sm:text-xl font-extrabold text-[#111F35] tracking-tight">
+                              {cat.title}
                             </h2>
-                            <p className="text-xs sm:text-sm text-slate-500 mt-0.5 leading-relaxed">
+                            <p className="text-sm text-slate-600 mt-1 leading-relaxed max-w-3xl">
                               {cat.description}
                             </p>
                           </div>
-                          <span className="text-sm sm:text-base font-mono font-bold text-[#8A244B] bg-[#F2EFE7] px-3 py-1.5 rounded-[4px]">
-                            {categoryTools.length} tools
-                          </span>
+
+                          {/* View all tools link to category page */}
+                          <button
+                            onClick={() => navigateToCategory(cat.id)}
+                            className="inline-flex items-center gap-1.5 self-start sm:self-center shrink-0 px-3.5 py-1.5 text-xs font-bold text-[#8A244B] hover:text-white bg-[#F2EFE7] hover:bg-[#8A244B] rounded-[4px] transition-colors cursor-pointer group"
+                            title={`View all ${categoryTools.length} ${cat.name} tools`}
+                          >
+                            <span>View all {cat.name} tools</span>
+                            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                          </button>
                         </div>
 
+                        {/* Top 6 tools preview */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                          {categoryTools.map((tool) => (
+                          {categoryTools.slice(0, 6).map((tool) => (
                             <ToolCard
                               key={tool.id}
                               tool={tool}
@@ -138,25 +183,40 @@ export default function App() {
                             />
                           ))}
                         </div>
+
+                        {/* Bottom link to view all tools in category if more than 6 */}
+                        {categoryTools.length > 6 && (
+                          <div className="text-center pt-1">
+                            <button
+                              onClick={() => navigateToCategory(cat.id)}
+                              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-[#8A244B] bg-white hover:bg-slate-50 border border-slate-200 px-4 py-2 rounded-[4px] shadow-sm transition-colors cursor-pointer group"
+                            >
+                              <span>View all {categoryTools.length} {cat.name} tools</span>
+                              <ArrowRight className="w-3.5 h-3.5 text-[#8A244B] group-hover:translate-x-0.5 transition-transform" />
+                            </button>
+                          </div>
+                        )}
                       </section>
                     );
                   })}
                 </div>
               ) : (
-                /* Filtered Flat Grid */
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                  {filteredTools.map((tool) => (
-                    <ToolCard
-                      key={tool.id}
-                      tool={tool}
-                      onSelect={selectTool}
-                    />
-                  ))}
-                  {filteredTools.length === 0 && (
-                    <div className="col-span-full p-8 text-center bg-white card-dev27 text-slate-500 text-xs">
-                      No tools found matching "{searchQuery}". Try another keyword or clear search filter.
-                    </div>
-                  )}
+                /* Dedicated Category Page View or Flat Filtered Search Grid */
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    {filteredTools.map((tool) => (
+                      <ToolCard
+                        key={tool.id}
+                        tool={tool}
+                        onSelect={selectTool}
+                      />
+                    ))}
+                    {filteredTools.length === 0 && (
+                      <div className="col-span-full p-8 text-center bg-white card-dev27 text-slate-500 text-sm">
+                        No tools found matching "{searchQuery}". Try another keyword or clear search filter.
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

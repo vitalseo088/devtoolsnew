@@ -27,15 +27,36 @@
     font-weight: 700;
   }
 
-  /* Tool form control font size */
+  /* Tool form control styling - Default #111F35 border, active #8A244B */
   input[type="text"],
   input[type="number"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
   input[type="date"],
   input[type="time"],
   input[type="datetime-local"],
   select,
   textarea {
+    border: 1px solid #111F35 !important;
+    border-radius: 4px;
     font-size: 0.875rem !important; /* 14px */
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+  }
+
+  input[type="text"]:focus,
+  input[type="number"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus,
+  input[type="search"]:focus,
+  input[type="date"]:focus,
+  input[type="time"]:focus,
+  input[type="datetime-local"]:focus,
+  select:focus,
+  textarea:focus {
+    border-color: #8A244B !important;
+    outline: none !important;
+    box-shadow: 0 0 0 1.5px #8A244B !important;
   }
 }
 

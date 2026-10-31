@@ -9,6 +9,7 @@ export type ToolCategory =
 export interface CategoryInfo {
   id: ToolCategory;
   name: string;
+  title: string;
   description: string;
   icon: string;
 }

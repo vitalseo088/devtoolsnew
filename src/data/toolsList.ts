@@ -44,12 +44,48 @@ import { ConstructionCalculators } from '../tools/construction/ConstructionCalcu
 import { PetNameGenerators } from '../tools/pets/PetNameGenerators';
 
 export const CATEGORIES: CategoryInfo[] = [
-  { id: 'developer', name: 'Developer', description: 'High-speed browser utilities for code formatting, data structure conversions (YAML, JSON, CSV), cron syntax generation, regex debugging, and Unix timestamp parsing.', icon: 'Code2' },
-  { id: 'creator', name: 'Creator', description: 'Audience growth and content creation tools including YouTube chapter generators, podcast name & episode title builders, teleprompter script makers, and Twitch stream planners.', icon: 'Mic' },
-  { id: 'seller', name: 'Ecommerce', description: 'Profitability and fee calculators tailored for Etsy, Amazon FBA, eBay, and Shopify sellers, including pricing break-even models, wholesale margins, and retail markup tools.', icon: 'ShoppingBag' },
-  { id: 'productivity', name: 'Productivity', description: 'Workplace efficiency tools featuring overtime wage estimators, freelance rate calculators, habit streak trackers, display PPI metrics, and customizable focus timers.', icon: 'CheckSquare' },
-  { id: 'construction', name: 'Construction', description: 'Jobsite material estimators and structural calculators for stair risers, concrete volume, gravel weight, roof pitch rafters, drywall sheet coverage, and fence framing.', icon: 'HardHat' },
-  { id: 'pets', name: 'Pet Names', description: 'Smart breed-aware name generators with origin meanings, character traits, and creative theme filters for dogs, cats, horses, bunnies, and birds.', icon: 'PawPrint' },
+  {
+    id: 'developer',
+    name: 'Developer',
+    title: 'Developer Utilities & Code Converters',
+    description: 'High-speed browser utilities for formatting YAML/JSON, converting data structures to CSV, generating cron expressions, debugging regular expressions, and parsing Unix timestamps with zero latency.',
+    icon: 'Code2',
+  },
+  {
+    id: 'creator',
+    name: 'Creator',
+    title: 'Creator, Podcasting & Streaming Tools',
+    description: 'Audience growth and content creation utilities to generate timestamped YouTube chapters, podcast show names, curiosity-driven episode titles, broadcast scripts, and custom Twitch panels.',
+    icon: 'Mic',
+  },
+  {
+    id: 'seller',
+    name: 'Ecommerce',
+    title: 'Ecommerce Profitability & Fee Calculators',
+    description: 'Precision financial models and fee estimators designed for Amazon FBA/FBM, Etsy, eBay, and Shopify sellers, including pricing break-even targets, wholesale margins, and retail markup tools.',
+    icon: 'ShoppingBag',
+  },
+  {
+    id: 'productivity',
+    name: 'Productivity',
+    title: 'Productivity, Wage & Display Tools',
+    description: 'Workplace utilities for calculating overtime wages, freelance hourly rates, shift timesheets, display PPI densities, color palettes, and daily habit streak trackers with zero server telemetry.',
+    icon: 'CheckSquare',
+  },
+  {
+    id: 'construction',
+    name: 'Construction',
+    title: 'Construction & Material Estimation Calculators',
+    description: 'Engineering calculators for jobsite materials including concrete volume, gravel tonnage, IRC-compliant staircase stringers, roof pitch rafters, drywall sheet coverage, and fence framing.',
+    icon: 'HardHat',
+  },
+  {
+    id: 'pets',
+    name: 'Pet Names',
+    title: 'Pet Name Generators with Meanings & Origins',
+    description: 'Smart breed-aware name generators featuring linguistic origins, character traits, and creative theme filters for dogs, cats, horses, bunnies, and birds.',
+    icon: 'PawPrint',
+  },
 ];
 
 export const TOOLS: ToolDefinition[] = [
