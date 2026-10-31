@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Copy, Download, RefreshCw, Bookmark, Check, Sparkles, Clock, FileText } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Copy, Download, RefreshCw, Bookmark, Check, Sparkles, Clock, FileText, Bot, Loader2 } from 'lucide-react';
 
 interface NameSuggestion {
   name: string;
@@ -18,11 +18,13 @@ export const PodcastNameGenerator: React.FC = () => {
   const [results, setResults] = useState<NameSuggestion[]>([]);
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [isAiLoading, setIsAiLoading] = useState<boolean>(false);
 
   const generateNames = () => {
     const kwList = keywords.split(',').map(k => k.trim()).filter(Boolean);
     const primary = kwList[0] || topic.split(' ')[0] || 'Studio';
     const secondary = kwList[1] || 'Chronicles';
+    const tertiary = kwList[2] || 'Uncut';
     const excludes = excludedWords.toLowerCase().split(',').map(w => w.trim()).filter(Boolean);
 
     const patterns = [
@@ -30,7 +32,7 @@ export const PodcastNameGenerator: React.FC = () => {
       { name: `Beyond ${secondary}`, style: 'Curiosity & Storytelling' },
       { name: `${primary} Unfiltered`, style: 'Casual & Candid' },
       { name: `The ${primary} & ${secondary} Show`, style: 'Classic Co-host' },
-      { name: `${primary} Lab: Future Voices`, style: 'Educational / Deep Dive' },
+      { name: `${primary} Lab: ${category} Voices`, style: 'Educational / Deep Dive' },
       { name: `Inside the ${primary} Matrix`, style: 'Tech & Modern' },
       { name: `Decode: ${primary}`, style: 'Minimalist & Punchy' },
       { name: `${primary} After Hours`, style: 'Conversational' },
@@ -38,6 +40,10 @@ export const PodcastNameGenerator: React.FC = () => {
       { name: `The Practical ${primary}`, style: 'Actionable Advice' },
       { name: `Zero to ${primary}`, style: 'Growth & Mastery' },
       { name: `${primary} Sessions`, style: 'Interview & Intimate' },
+      { name: `${category} Insights with ${primary}`, style: 'Niche Authority' },
+      { name: `${primary} & ${tertiary}`, style: 'Bold & Punchy' },
+      { name: `The ${primary} Blueprint`, style: 'Strategy & Tactics' },
+      { name: `Talking ${primary}`, style: 'Accessible & Friendly' }
     ];
 
     const filtered = patterns
@@ -50,7 +56,7 @@ export const PodcastNameGenerator: React.FC = () => {
       .map(p => ({
         name: p.name,
         style: p.style,
-        score: Math.floor(Math.random() * 15) + 85,
+        score: Math.floor(Math.random() * 12) + 88,
       }));
 
     const uniqueMap = new Map();
@@ -58,9 +64,46 @@ export const PodcastNameGenerator: React.FC = () => {
     setResults(Array.from(uniqueMap.values()));
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     generateNames();
   }, [category, tone, nameLength]);
+
+  const generateWithAi = async () => {
+    setIsAiLoading(true);
+    try {
+      const prompt = `Generate 10 creative, catchy podcast show name ideas for a podcast about "${topic}".
+Category: ${category}
+Keywords: ${keywords}
+Tone: ${tone}
+Excluded words: ${excludedWords}
+
+Return JSON array in format:
+[
+  {"name": "Podcast Name", "style": "Style descriptor", "score": 95}
+]`;
+      const res = await fetch('/api/gemini/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt, systemInstruction: 'Respond only with valid JSON array.' }),
+      });
+      const data = await res.json();
+      if (data.text) {
+        const cleanJson = data.text.replace(/```json/g, '').replace(/```/g, '').trim();
+        const parsed = JSON.parse(cleanJson);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setResults(parsed);
+        } else {
+          generateNames();
+        }
+      } else {
+        generateNames();
+      }
+    } catch (e) {
+      generateNames();
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
 
   const copyToClipboard = (text: string, key: string) => {
     navigator.clipboard.writeText(text);
@@ -91,7 +134,7 @@ export const PodcastNameGenerator: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="p-4 bg-white card-dev27 shadow-sm flex items-center justify-between">
+      <div className="p-4 bg-white card-dev27 shadow-sm flex flex-wrap items-center justify-between gap-3">
         <div>
           <span className="text-xs font-bold text-[#8A244B] uppercase tracking-wider block">Creator Suite</span>
           <h2 className="text-lg font-bold text-[#111F35]">Podcast Show Name Generator</h2>
@@ -108,7 +151,7 @@ export const PodcastNameGenerator: React.FC = () => {
             onClick={() => downloadResults('csv')}
             className="px-3 py-1.5 rounded-[4px] bg-[#F2EFE7] hover:bg-slate-200 text-[#111F35] font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
           >
-            <span>CSV</span>
+            <span>Export CSV</span>
           </button>
         </div>
       </div>
@@ -127,6 +170,7 @@ export const PodcastNameGenerator: React.FC = () => {
                 type="text"
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
+                placeholder="e.g. AI & Design, Gaming, Personal Finance"
                 className="w-full p-2.5 border border-slate-300 rounded-[4px] bg-slate-50 focus:bg-white focus:border-[#8A244B] text-sm font-bold"
               />
             </div>
@@ -137,6 +181,7 @@ export const PodcastNameGenerator: React.FC = () => {
                 type="text"
                 value={keywords}
                 onChange={(e) => setKeywords(e.target.value)}
+                placeholder="e.g. future, tech, creative, code"
                 className="w-full p-2.5 border border-slate-300 rounded-[4px] bg-slate-50 focus:bg-white focus:border-[#8A244B] text-sm"
               />
             </div>
@@ -172,14 +217,37 @@ export const PodcastNameGenerator: React.FC = () => {
               </div>
             </div>
 
-            <button
-              type="button"
-              onClick={generateNames}
-              className="w-full py-2.5 px-4 font-bold text-xs bg-[#8A244B] hover:bg-[#721C3D] text-white rounded-[4px] flex items-center justify-center gap-2 cursor-pointer shadow-sm"
-            >
-              <RefreshCw className="w-3.5 h-3.5" />
-              <span>Regenerate Suggestions</span>
-            </button>
+            <div>
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-1.5">Excluded Words (optional)</label>
+              <input
+                type="text"
+                value={excludedWords}
+                onChange={(e) => setExcludedWords(e.target.value)}
+                placeholder="e.g. daily, talk"
+                className="w-full p-2 border border-slate-300 rounded-[4px] bg-slate-50 text-xs"
+              />
+            </div>
+
+            <div className="flex flex-col gap-2 pt-2">
+              <button
+                type="button"
+                onClick={generateNames}
+                className="w-full py-2.5 px-4 font-bold text-xs bg-[#8A244B] hover:bg-[#721C3D] text-white rounded-[4px] flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Generate Names</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={generateWithAi}
+                disabled={isAiLoading}
+                className="w-full py-2 px-4 font-semibold text-xs bg-[#111F35] hover:bg-slate-800 text-white rounded-[4px] flex items-center justify-center gap-2 cursor-pointer shadow-sm disabled:opacity-50"
+              >
+                {isAiLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Bot className="w-3.5 h-3.5" />}
+                <span>{isAiLoading ? 'AI Generating...' : 'AI Generate (Gemini)'}</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -231,23 +299,62 @@ export const PodcastEpisodeTitleGenerator: React.FC = () => {
   const [episodeNum, setEpisodeNum] = useState<number>(42);
   const [titles, setTitles] = useState<{ title: string; type: string }[]>([]);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [isAiLoading, setIsAiLoading] = useState<boolean>(false);
 
   const generateTitles = () => {
     const kw = keywords.split(',')[0]?.trim() || topic;
+    const kw2 = keywords.split(',')[1]?.trim() || 'Best Practices';
     const generated = [
       { title: `Ep. ${episodeNum}: Why Most Devs Get ${kw} Completely Wrong`, type: 'Curiosity Hook' },
       { title: `Ep. ${episodeNum}: The Ultimate Blueprint for ${topic}`, type: 'Masterclass' },
-      { title: `Ep. ${episodeNum}: Inside ${kw}: How Top Teams Scale Without Downtime`, type: 'Engineering Case' },
-      { title: `Ep. ${episodeNum}: Can ${kw} Actually Save Your Web App?`, type: 'Debate & Analysis' },
-      { title: `Ep. ${episodeNum}: 5 Battle-Tested ${kw} Strategies with Proven Results`, type: 'Actionable Guide' },
-      { title: `Ep. ${episodeNum}: Stop Making These ${kw} Mistakes`, type: 'Warning' },
+      { title: `Ep. ${episodeNum}: Inside ${kw}: How Top Teams Scale Without Downtime`, type: 'Engineering Case Study' },
+      { title: `Ep. ${episodeNum}: Can ${kw} Actually Save Your Project?`, type: 'Debate & Analysis' },
+      { title: `Ep. ${episodeNum}: 5 Battle-Tested ${kw} Strategies for ${kw2}`, type: 'Actionable Guide' },
+      { title: `Ep. ${episodeNum}: Stop Making These Costly ${kw} Mistakes`, type: 'Warning' },
+      { title: `Ep. ${episodeNum}: The Secret to Mastering ${topic} in 2026`, type: 'Growth & Secrets' },
+      { title: `Ep. ${episodeNum}: From Zero to Production with ${kw}`, type: 'Beginner to Advanced' },
     ];
     setTitles(generated);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     generateTitles();
   }, []);
+
+  const generateWithAi = async () => {
+    setIsAiLoading(true);
+    try {
+      const prompt = `Generate 8 high-click-through podcast episode titles for Episode #${episodeNum}.
+Topic: ${topic}
+Keywords: ${keywords}
+
+Return JSON array in format:
+[
+  {"title": "Ep. 42: ...", "type": "Curiosity Hook"}
+]`;
+      const res = await fetch('/api/gemini/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt, systemInstruction: 'Respond only with valid JSON array.' }),
+      });
+      const data = await res.json();
+      if (data.text) {
+        const cleanJson = data.text.replace(/```json/g, '').replace(/```/g, '').trim();
+        const parsed = JSON.parse(cleanJson);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setTitles(parsed);
+        } else {
+          generateTitles();
+        }
+      } else {
+        generateTitles();
+      }
+    } catch (e) {
+      generateTitles();
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -295,14 +402,25 @@ export const PodcastEpisodeTitleGenerator: React.FC = () => {
               />
             </div>
 
-            <button
-              type="button"
-              onClick={generateTitles}
-              className="w-full py-2.5 px-4 font-bold text-xs bg-[#8A244B] hover:bg-[#721C3D] text-white rounded-[4px] flex items-center justify-center gap-2 cursor-pointer shadow-sm"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Generate Titles</span>
-            </button>
+            <div className="flex flex-col gap-2 pt-2">
+              <button
+                type="button"
+                onClick={generateTitles}
+                className="w-full py-2.5 px-4 font-bold text-xs bg-[#8A244B] hover:bg-[#721C3D] text-white rounded-[4px] flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Generate Titles</span>
+              </button>
+              <button
+                type="button"
+                onClick={generateWithAi}
+                disabled={isAiLoading}
+                className="w-full py-2 px-4 font-semibold text-xs bg-[#111F35] hover:bg-slate-800 text-white rounded-[4px] flex items-center justify-center gap-2 cursor-pointer shadow-sm disabled:opacity-50"
+              >
+                {isAiLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Bot className="w-3.5 h-3.5" />}
+                <span>{isAiLoading ? 'AI Generating...' : 'AI Generate (Gemini)'}</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -345,48 +463,81 @@ export const PodcastEpisodeTitleGenerator: React.FC = () => {
 export const PodcastDescriptionGenerator: React.FC = () => {
   const [podcastName, setPodcastName] = useState<string>('Dev27 Tech Dispatch');
   const [episodeTitle, setEpisodeTitle] = useState<string>('Building Scalable Web Architecture');
-  const [summary, setSummary] = useState<string>('Deep dive into client-side processing, database indexing, and edge rendering with Senior Architect Elena Rostova.');
+  const [summary, setSummary] = useState<string>('Deep dive into client-side processing, performance benchmarks, and zero-server scalability.');
   const [guestName, setGuestName] = useState<string>('Elena Rostova');
-  const [guestBio, setGuestBio] = useState<string>('Principal Systems Engineer at Aurora Cloud.');
+  const [guestBio, setGuestBio] = useState<string>('Principal Systems Engineer at Cloud Tech');
   const [timestamps, setTimestamps] = useState<string>(
     `00:00 - Introduction & Welcome
-04:15 - Why Traditional RDBMS Stalls at Scale
-14:30 - Edge Compute vs Central Server Bottlenecks
-26:45 - Live Case Study: 10M Concurrent Sessions
-38:00 - Elena's Advice for Junior Engineers`
+04:15 - Core Concepts & Foundational Architecture
+14:30 - Performance Bottlenecks & Benchmarks
+26:45 - Live Case Study & Real-World Examples
+38:00 - Key Takeaways & Audience Q&A`
   );
   const [generatedOutput, setGeneratedOutput] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
+  const [isAiLoading, setIsAiLoading] = useState<boolean>(false);
 
   const generateDescription = () => {
-    const text = `In this episode of ${podcastName}, we talk with ${guestName} (${guestBio}) about ${episodeTitle}.
+    const guestBlock = guestName.trim() ? `In this episode of ${podcastName}, we feature special guest ${guestName}${guestBio ? ` (${guestBio})` : ''} to discuss "${episodeTitle}".` : `In this episode of ${podcastName}, we take a deep dive into "${episodeTitle}".`;
 
+    const text = `${guestBlock}
+
+EPISODE SUMMARY:
 ${summary}
 
 TIMESTAMPS:
 ${timestamps}
 
-KEY TAKEAWAYS:
-• Practical lessons on edge architecture and zero-server scalability.
-• How to diagnose throughput bottlenecks before launch.
-• Tools and benchmarks used every day in high-traffic production.
+KEY LESSONS & TAKEAWAYS:
+• In-depth analysis of ${episodeTitle} principles.
+• Practical strategies you can implement right away.
+• Critical mistakes to avoid in production.
 
-CONNECT & RESOURCES:
-• Try Dev27 Browser-based Tools: https://dev27.tools
-• Subscribe to ${podcastName} on Apple Podcasts & Spotify!
+RESOURCES & LINKS:
+• Official Website: https://dev27.tools
+• Subscribe on Apple Podcasts, Spotify, and YouTube!
 
-#podcast #tech #engineering #softwarearchitecture`;
+#podcast #${podcastName.replace(/[^a-zA-Z0-9]/g, '')} #audio #creator`;
 
     setGeneratedOutput(text);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     generateDescription();
   }, [podcastName, episodeTitle, guestName]);
 
+  const generateWithAi = async () => {
+    setIsAiLoading(true);
+    try {
+      const prompt = `Write a comprehensive, professional podcast episode show notes description.
+Podcast: ${podcastName}
+Episode Title: ${episodeTitle}
+Summary: ${summary}
+Guest: ${guestName} (${guestBio})
+Timestamps: ${timestamps}
+
+Format cleanly with sections for Overview, Key Takeaways, Timestamps, and Resources.`;
+      const res = await fetch('/api/gemini/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt }),
+      });
+      const data = await res.json();
+      if (data.text) {
+        setGeneratedOutput(data.text);
+      } else {
+        generateDescription();
+      }
+    } catch (e) {
+      generateDescription();
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
-      <div className="p-4 bg-white card-dev27 shadow-sm flex items-center justify-between">
+      <div className="p-4 bg-white card-dev27 shadow-sm flex items-center justify-between flex-wrap gap-2">
         <div>
           <span className="text-xs font-bold text-[#8A244B] uppercase tracking-wider block">Creator Suite</span>
           <h2 className="text-lg font-bold text-[#111F35]">Podcast Show Notes &amp; Description Maker</h2>
@@ -473,14 +624,26 @@ CONNECT & RESOURCES:
               />
             </div>
 
-            <button
-              type="button"
-              onClick={generateDescription}
-              className="w-full py-2.5 px-4 font-bold text-xs bg-[#8A244B] hover:bg-[#721C3D] text-white rounded-[4px] flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
-            >
-              <RefreshCw className="w-3.5 h-3.5" />
-              <span>Update Description</span>
-            </button>
+            <div className="flex flex-col gap-2 pt-2">
+              <button
+                type="button"
+                onClick={generateDescription}
+                className="w-full py-2.5 px-4 font-bold text-xs bg-[#8A244B] hover:bg-[#721C3D] text-white rounded-[4px] flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Update Description</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={generateWithAi}
+                disabled={isAiLoading}
+                className="w-full py-2 px-4 font-semibold text-xs bg-[#111F35] hover:bg-slate-800 text-white rounded-[4px] flex items-center justify-center gap-2 cursor-pointer shadow-sm disabled:opacity-50"
+              >
+                {isAiLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Bot className="w-3.5 h-3.5" />}
+                <span>{isAiLoading ? 'AI Generating...' : 'AI Generate (Gemini)'}</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -509,48 +672,144 @@ CONNECT & RESOURCES:
 
 // 2.4 Podcast Script Maker
 export const PodcastScriptMaker: React.FC = () => {
-  const [topic, setTopic] = useState<string>('The Future of Autonomous Web Agents');
+  const [topic, setTopic] = useState<string>('Gardening Tips & Organic Growing');
   const [format, setFormat] = useState<string>('Interview');
   const [guestName, setGuestName] = useState<string>('Marcus Vance');
+  const [coHostName, setCoHostName] = useState<string>('Sarah Jenkins');
+  const [sponsorName, setSponsorName] = useState<string>('Dev27 Tools');
   const [script, setScript] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
+  const [isAiLoading, setIsAiLoading] = useState<boolean>(false);
 
   const generateScript = () => {
-    const text = `[EPISODE INTRO]
-[HOST]: Welcome back to the show. Today we are tackling something on every builder's radar: "${topic}".
-[HOST]: Have you ever wondered what happens when software starts writing, deploying, and debugging itself without human bottlenecks? Joining us today is ${guestName}. Welcome to the mic!
-[GUEST - ${guestName}]: Great to be here. Excited to dig into this!
+    let text = '';
+    const cleanTopic = topic.trim() || 'Today\'s Main Subject';
+    const cleanGuest = guestName.trim() || 'Our Special Guest';
+    const cleanCoHost = coHostName.trim() || 'Co-Host Alex';
+    const cleanSponsor = sponsorName.trim() || 'Dev27';
 
-[SECTION 1: THE CURRENT HOOK & STATUS QUO]
-[HOST]: Let's start with the big picture. When people hear "autonomous agents", they often imagine sci-fi robots. What does the real technology look like right now in practical production environments?
-[GUEST]: Right now, it's about reliable tool orchestration. Instead of static text responses, models interact with APIs, databases, and code sandboxes in closed execution loops.
-[HOST]: Exactly. The barrier hasn't been intelligence—it's been deterministic reliability.
+    if (format === 'Solo Monologue') {
+      text = `[EPISODE INTRO]
+[HOST]: Welcome back to the show! I'm your host, and today we're diving straight into "${cleanTopic}".
+[HOST]: If you've ever struggled to make sense of this subject or wondered how to get real results, this episode is tailor-made for you.
+
+[SECTION 1: THE CORE PROBLEM]
+[HOST]: Let's start with why "${cleanTopic}" is such a huge talking point right now. Most people get overwhelmed because of conflicting information.
+[HOST]: But when you break it down into fundamental principles, it becomes remarkably straightforward.
 
 [SPONSOR BREAK / MID-ROLL]
-[HOST]: Quick reminder: Today's conversation is brought to you by Dev27—the 100% private, client-side toolkit for developers and creators. Check out over 60 free tools with zero telemetry at dev27.tools.
+[HOST]: Today's episode is brought to you by ${cleanSponsor}. Check out fast, client-side tools and utilities with zero telemetry at dev27.tools.
 
-[SECTION 2: DEEP DIVE & KEY CHALLENGES]
-[HOST]: ${guestName}, what is the number one failure mode you see when teams attempt to integrate tool-calling agents into production?
-[GUEST]: Error recovery. Most engineers don't account for what happens when a third-party API rate-limits or returns malformed payloads. Resilient agents need graceful fallbacks.
+[SECTION 2: STEP-BY-STEP ACTION PLAN]
+[HOST]: Here are the 3 essential steps you need to take when approaching "${cleanTopic}":
+[HOST]: Step 1: Establish your foundation and clarify your objectives.
+[HOST]: Step 2: Avoid common pitfalls by testing small before committing big.
+[HOST]: Step 3: Continuously refine your setup based on feedback and real data.
 
 [CALL TO ACTION & OUTRO]
-[HOST]: Incredible insights. For our listeners: where can people follow your work and connect with you?
-[GUEST]: You can find my research notes and code repositories on GitHub and Twitter.
-[HOST]: Thank you for tuning in! Make sure to hit subscribe, leave a 5-star review, and we'll catch you next week with another deep dive!`;
+[HOST]: That wraps up today's breakdown on "${cleanTopic}".
+[HOST]: If you found value in this episode, please leave a 5-star review, subscribe on Spotify or Apple Podcasts, and share it with a friend! Until next time!`;
+    } else if (format === 'Two Co-hosts') {
+      text = `[EPISODE INTRO]
+[HOST A]: Hey everyone, welcome back to the podcast! I'm here with my co-host, ${cleanCoHost}.
+[HOST B - ${cleanCoHost}]: Hey everyone! Today we're tackling a topic we've both been eager to discuss: "${cleanTopic}".
+[HOST A]: Absolutely. It feels like everyone has an opinion on "${cleanTopic}", but what actually works?
+
+[SECTION 1: DEBATE & PERSPECTIVES]
+[HOST B - ${cleanCoHost}]: From my side, the biggest mistake people make is ignoring the basic fundamentals. What's your take?
+[HOST A]: I completely agree. People rush to advanced strategies without getting step one right.
+
+[SPONSOR BREAK]
+[HOST A]: Quick reminder: Today's conversation is powered by ${cleanSponsor}. Discover over 60 free, private web tools at dev27.tools.
+
+[SECTION 2: KEY TAKEAWAYS]
+[HOST B - ${cleanCoHost}]: If our listeners only take away one thing today about "${cleanTopic}", what should it be?
+[HOST A]: Focus on consistency over complexity. Keep it practical.
+
+[OUTRO]
+[HOST A & B]: Thanks for listening! Don't forget to hit subscribe and check back next week!`;
+    } else if (format === 'Storytelling') {
+      text = `[EPISODE INTRO - NARRATIVE HOOK]
+[NARRATOR]: It began with a simple question about "${cleanTopic}". But what seemed straightforward turned into a journey of discovery.
+
+[CHAPTER 1: THE ORIGIN STORY]
+[NARRATOR]: When we look at "${cleanTopic}", we find stories of trial, error, and unexpected breakthroughs.
+
+[MID-ROLL ANNOUNCEMENT]
+[HOST]: Supported by ${cleanSponsor} — empowering creators and developers worldwide.
+
+[CHAPTER 2: THE BREAKTHROUGH]
+[NARRATOR]: The turning point came when the core lesson of "${cleanTopic}" was finally understood.
+
+[CONCLUSION & LESSON]
+[NARRATOR]: Thank you for listening to this narrative feature. Join us next episode as we explore another compelling story.`;
+    } else {
+      // Default: Interview Format
+      text = `[EPISODE INTRO]
+[HOST]: Welcome back to the show. Today we are tackling something on every listener's radar: "${cleanTopic}".
+[HOST]: Joining us today is subject matter expert ${cleanGuest}. Welcome to the mic, ${cleanGuest}!
+[GUEST - ${cleanGuest}]: Great to be here! Excited to dig into "${cleanTopic}" with you today.
+
+[SECTION 1: THE CURRENT HOOK & STATUS QUO]
+[HOST]: Let's start with the big picture. When people ask you about "${cleanTopic}", what is the biggest misconception you run into?
+[GUEST - ${cleanGuest}]: The biggest myth is that it has to be overly complicated. In reality, focusing on solid core habits produces 80% of the results.
+[HOST]: That makes complete sense. Simplicity almost always wins over friction.
+
+[SPONSOR BREAK / MID-ROLL]
+[HOST]: Quick reminder: Today's conversation is brought to you by ${cleanSponsor}—the 100% private, client-side toolkit for developers and creators. Check out free tools with zero telemetry at dev27.tools.
+
+[SECTION 2: DEEP DIVE & PRACTICAL STRATEGY]
+[HOST]: ${cleanGuest}, what is the number one piece of advice you would give someone starting out with "${cleanTopic}" today?
+[GUEST - ${cleanGuest}]: Start small, track your progress, and don't be afraid to iterate when circumstances change.
+
+[CALL TO ACTION & OUTRO]
+[HOST]: Incredible insights today on "${cleanTopic}". ${cleanGuest}, where can our audience find your work and stay connected?
+[GUEST - ${cleanGuest}]: You can find my latest updates, publications, and projects online and on social media!
+[HOST]: Thank you for tuning in! Make sure to hit subscribe, leave a review, and catch us next week!`;
+    }
 
     setScript(text);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     generateScript();
-  }, [topic, format, guestName]);
+  }, [topic, format, guestName, coHostName, sponsorName]);
+
+  const generateWithAi = async () => {
+    setIsAiLoading(true);
+    try {
+      const prompt = `Write a complete, highly engaging podcast script for a podcast episode.
+Topic: "${topic}"
+Format: ${format}
+Guest Name: ${guestName}
+Co-Host Name: ${coHostName}
+Sponsor Name: ${sponsorName}
+
+Format with speaker cues like [HOST]:, [GUEST - ${guestName}]:, section headers, and timestamps. Make it detailed, informative, and customized strictly to "${topic}".`;
+      const res = await fetch('/api/gemini/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt }),
+      });
+      const data = await res.json();
+      if (data.text) {
+        setScript(data.text);
+      } else {
+        generateScript();
+      }
+    } catch (e) {
+      generateScript();
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
 
   const wordCount = script.trim().split(/\s+/).filter(Boolean).length;
   const estimatedMinutes = (wordCount / 150).toFixed(1);
 
   return (
     <div className="space-y-6">
-      <div className="p-4 bg-white card-dev27 shadow-sm flex items-center justify-between">
+      <div className="p-4 bg-white card-dev27 shadow-sm flex items-center justify-between flex-wrap gap-2">
         <div>
           <span className="text-xs font-bold text-[#8A244B] uppercase tracking-wider block">Creator Suite</span>
           <h2 className="text-lg font-bold text-[#111F35]">Podcast Script Maker &amp; Teleprompter</h2>
@@ -582,6 +841,7 @@ export const PodcastScriptMaker: React.FC = () => {
                 type="text"
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
+                placeholder="e.g. Gardening Tips, Crypto Investing, Fitness"
                 className="w-full p-2.5 border border-slate-300 rounded-[4px] bg-slate-50 focus:bg-white text-sm font-bold"
               />
             </div>
@@ -593,19 +853,43 @@ export const PodcastScriptMaker: React.FC = () => {
                 onChange={(e) => setFormat(e.target.value)}
                 className="w-full p-2.5 border border-slate-300 rounded-[4px] bg-slate-50 text-xs font-medium"
               >
-                <option value="Solo">Solo Monologue</option>
+                <option value="Solo Monologue">Solo Monologue</option>
                 <option value="Interview">Guest Interview</option>
-                <option value="Co-hosted">Two Co-hosts</option>
+                <option value="Two Co-hosts">Two Co-hosts</option>
                 <option value="Storytelling">Narrative / Storytelling</option>
               </select>
             </div>
 
+            {format === 'Interview' && (
+              <div>
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-1.5">Guest Name</label>
+                <input
+                  type="text"
+                  value={guestName}
+                  onChange={(e) => setGuestName(e.target.value)}
+                  className="w-full p-2.5 border border-slate-300 rounded-[4px] bg-slate-50 focus:bg-white text-sm"
+                />
+              </div>
+            )}
+
+            {format === 'Two Co-hosts' && (
+              <div>
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-1.5">Co-Host Name</label>
+                <input
+                  type="text"
+                  value={coHostName}
+                  onChange={(e) => setCoHostName(e.target.value)}
+                  className="w-full p-2.5 border border-slate-300 rounded-[4px] bg-slate-50 focus:bg-white text-sm"
+                />
+              </div>
+            )}
+
             <div>
-              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-1.5">Guest Name</label>
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-1.5">Sponsor / Mid-Roll Mention</label>
               <input
                 type="text"
-                value={guestName}
-                onChange={(e) => setGuestName(e.target.value)}
+                value={sponsorName}
+                onChange={(e) => setSponsorName(e.target.value)}
                 className="w-full p-2.5 border border-slate-300 rounded-[4px] bg-slate-50 focus:bg-white text-sm"
               />
             </div>
@@ -619,14 +903,26 @@ export const PodcastScriptMaker: React.FC = () => {
               </div>
             </div>
 
-            <button
-              type="button"
-              onClick={generateScript}
-              className="w-full py-2.5 px-4 font-bold text-xs bg-[#8A244B] hover:bg-[#721C3D] text-white rounded-[4px] flex items-center justify-center gap-2 cursor-pointer shadow-sm"
-            >
-              <RefreshCw className="w-3.5 h-3.5" />
-              <span>Regenerate Script</span>
-            </button>
+            <div className="flex flex-col gap-2 pt-2">
+              <button
+                type="button"
+                onClick={generateScript}
+                className="w-full py-2.5 px-4 font-bold text-xs bg-[#8A244B] hover:bg-[#721C3D] text-white rounded-[4px] flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Generate Script</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={generateWithAi}
+                disabled={isAiLoading}
+                className="w-full py-2 px-4 font-semibold text-xs bg-[#111F35] hover:bg-slate-800 text-white rounded-[4px] flex items-center justify-center gap-2 cursor-pointer shadow-sm disabled:opacity-50"
+              >
+                {isAiLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Bot className="w-3.5 h-3.5" />}
+                <span>{isAiLoading ? 'AI Scriptwriting...' : 'AI Generate Script (Gemini)'}</span>
+              </button>
+            </div>
           </div>
         </div>
 
