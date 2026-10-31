@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, Check, Download, Calendar, Target, Award, AlertCircle } from 'lucide-react';
+import { Plus, Trash2, Check, Download, Calendar, Target, Award, AlertCircle, Copy } from 'lucide-react';
 
 interface Props {
   type: 'project-cost' | 'weekly-schedule' | 'habit-tracker' | 'goal-tracker';
@@ -23,13 +23,14 @@ export const ProjectAndHabitTrackers: React.FC<Props> = ({ type }) => {
   ]);
   const [contingencyPct, setContingencyPct] = useState<number>(10);
   const [projectTaxPct, setProjectTaxPct] = useState<number>(8.0);
+  const [copied, setCopied] = useState<boolean>(false);
 
   // 4.5 Habit Tracker (localStorage)
   interface Habit {
     id: string;
     name: string;
     targetDaysPerWeek: number;
-    completedDates: string[]; // YYYY-MM-DD
+    completedDates: string[];
     currentStreak: number;
     bestStreak: number;
   }
@@ -68,28 +69,14 @@ export const ProjectAndHabitTrackers: React.FC<Props> = ({ type }) => {
         targetDate: '2026-11-15',
         progressPct: 85,
         milestones: [
-          { title: 'Build 12 Developer Utilities', done: true },
-          { title: 'Build 13 Creator & Podcast Tools', done: true },
-          { title: 'Build Construction & Ecom Calculators', done: true },
-          { title: 'Run Cross-Device Verification', done: false },
-        ],
-      },
-      {
-        id: '2',
-        title: 'Reach $10k Monthly Recurring Revenue',
-        category: 'Business',
-        targetDate: '2026-12-31',
-        progressPct: 40,
-        milestones: [
-          { title: 'Validate product-market fit', done: true },
-          { title: 'Acquire first 100 paid users', done: false },
-          { title: 'Automate customer onboarding', done: false },
+          { title: 'Complete all 69 tools with TypeScript & Tailwind', done: true },
+          { title: 'Standardize 2-column input/output layouts', done: true },
+          { title: 'Verify builds and zero telemetry privacy', done: true },
         ],
       },
     ];
   });
 
-  // Save to localStorage
   useEffect(() => {
     try {
       localStorage.setItem('dev27_habits', JSON.stringify(habits));
@@ -105,6 +92,7 @@ export const ProjectAndHabitTrackers: React.FC<Props> = ({ type }) => {
   // Project Cost Calculations
   const totalLaborCost = tasks.reduce((sum, t) => sum + (t.hours * t.laborRate * t.workers), 0);
   const totalMaterialsCost = tasks.reduce((sum, t) => sum + t.materialsCost, 0);
+  const totalHours = tasks.reduce((sum, t) => sum + t.hours, 0);
   const baseSubtotal = totalLaborCost + totalMaterialsCost;
   const contingencyAmount = baseSubtotal * (contingencyPct / 100);
   const subtotalWithContingency = baseSubtotal + contingencyAmount;
@@ -172,247 +160,281 @@ export const ProjectAndHabitTrackers: React.FC<Props> = ({ type }) => {
     'goal-tracker': 'Goal & Milestone Progress Tracker',
   };
 
+  const copySummary = () => {
+    const text = `Project Estimate Summary:
+Total Budget: $${totalProjectCost.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+Labor Subtotal (${totalHours} hrs): $${totalLaborCost.toLocaleString()}
+Materials Subtotal: $${totalMaterialsCost.toLocaleString()}
+Contingency Buffer (${contingencyPct}%): +$${contingencyAmount.toFixed(0)}
+Tax (${projectTaxPct}%): +$${taxAmount.toFixed(0)}`;
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="p-4 bg-white card-dev27 space-y-3">
-        <span className="text-xs font-bold text-slate-800 uppercase tracking-wide block pb-2 border-b border-slate-100">
-          {titles[type]}
-        </span>
-
+    <div className="space-y-6">
+      <div className="p-4 bg-white card-dev27 shadow-sm flex items-center justify-between">
+        <div>
+          <span className="text-xs font-bold text-[#8A244B] uppercase tracking-wider block">
+            Productivity &amp; Management
+          </span>
+          <h2 className="text-lg font-bold text-[#111F35]">{titles[type]}</h2>
+        </div>
         {type === 'project-cost' && (
-          <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1.5">
-                <span className="text-slate-600 font-medium">Contingency Buffer:</span>
-                <input
-                  type="number"
-                  min={0}
-                  max={50}
-                  value={contingencyPct}
-                  onChange={(e) => setContingencyPct(Number(e.target.value))}
-                  className="w-16 p-1 border border-slate-300 rounded-[4px] text-center"
-                />
-                <span className="text-slate-500">%</span>
-              </div>
-
-              <div className="flex items-center gap-1.5">
-                <span className="text-slate-600 font-medium">Sales / Service Tax:</span>
-                <input
-                  type="number"
-                  step="0.5"
-                  value={projectTaxPct}
-                  onChange={(e) => setProjectTaxPct(Number(e.target.value))}
-                  className="w-16 p-1 border border-slate-300 rounded-[4px] text-center"
-                />
-                <span className="text-slate-500">%</span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setTasks([...tasks, { id: Date.now().toString(), name: 'New Activity', hours: 10, laborRate: 60, workers: 1, materialsCost: 0 }])}
-                className="px-3 py-1.5 text-xs font-semibold bg-[#F2EFE7] hover:bg-slate-200 text-[#111F35] rounded-[4px] flex items-center gap-1"
-              >
-                <Plus className="w-3.5 h-3.5 text-[#8A244B]" />
-                Add Task
-              </button>
-              <button
-                onClick={exportProjectCostCsv}
-                className="px-3 py-1.5 text-xs font-semibold bg-[#8A244B] hover:bg-[#721C3D] text-white rounded-[4px] flex items-center gap-1"
-              >
-                <Download className="w-3.5 h-3.5" />
-                Export Estimate (CSV)
-              </button>
-            </div>
-          </div>
-        )}
-
-        {type === 'habit-tracker' && (
           <div className="flex items-center gap-2">
-            <input
-              type="text"
-              value={newHabitName}
-              onChange={(e) => setNewHabitName(e.target.value)}
-              placeholder="Enter new habit (e.g. Daily LeetCode, Hydration)..."
-              className="flex-1 p-2 border border-slate-300 rounded-[4px] text-xs bg-white"
-              onKeyDown={(e) => e.key === 'Enter' && addHabit()}
-            />
             <button
-              onClick={addHabit}
-              className="px-4 py-2 text-xs font-semibold bg-[#8A244B] hover:bg-[#721C3D] text-white rounded-[4px] flex items-center gap-1"
+              onClick={copySummary}
+              className="px-3 py-1.5 rounded-[4px] bg-[#F2EFE7] hover:bg-slate-200 text-[#111F35] font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
             >
-              <Plus className="w-3.5 h-3.5" />
-              Add Habit
+              {copied ? <Check className="w-3.5 h-3.5 text-green-700" /> : <Copy className="w-3.5 h-3.5 text-[#8A244B]" />}
+              <span>{copied ? 'Copied' : 'Copy Summary'}</span>
+            </button>
+            <button
+              onClick={exportProjectCostCsv}
+              className="px-3 py-1.5 text-xs font-semibold bg-[#8A244B] hover:bg-[#721C3D] text-white rounded-[4px] flex items-center gap-1 cursor-pointer"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Export CSV</span>
             </button>
           </div>
         )}
       </div>
 
-      {/* KPI Cards Strip */}
       {type === 'project-cost' && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="p-3 bg-white card-dev27 text-xs">
-            <span className="text-slate-500 block mb-0.5">Labor Subtotal</span>
-            <span className="font-mono text-lg font-bold text-slate-900">
-              ${totalLaborCost.toLocaleString()}
-            </span>
-          </div>
-          <div className="p-3 bg-white card-dev27 text-xs">
-            <span className="text-slate-500 block mb-0.5">Materials Subtotal</span>
-            <span className="font-mono text-lg font-bold text-slate-800">
-              ${totalMaterialsCost.toLocaleString()}
-            </span>
-          </div>
-          <div className="p-3 bg-white card-dev27 text-xs">
-            <span className="text-slate-500 block mb-0.5">Contingency ({contingencyPct}%)</span>
-            <span className="font-mono text-lg font-bold text-[#D84315]">
-              +${contingencyAmount.toFixed(0)}
-            </span>
-          </div>
-          <div className="p-3 bg-white card-dev27 text-xs">
-            <span className="text-slate-500 block mb-0.5">Total Estimated Budget</span>
-            <span className="font-mono text-lg font-bold text-[#2E7D32]">
-              ${totalProjectCost.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-            </span>
-          </div>
-        </div>
-      )}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Left Column: Tasks and Cost Inputs */}
+          <div className="lg:col-span-7 space-y-5">
+            <div className="p-5 bg-white card-dev27 shadow-md rounded-[4px] border border-slate-200/90 space-y-4">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                <h3 className="text-xs font-extrabold text-slate-800 uppercase tracking-wider">
+                  Work Breakdown Tasks ({tasks.length})
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setTasks([...tasks, { id: Date.now().toString(), name: 'New Activity', hours: 10, laborRate: 60, workers: 1, materialsCost: 0 }])}
+                  className="px-3 py-1 text-xs font-bold bg-[#F2EFE7] hover:bg-slate-200 text-[#111F35] rounded-[4px] flex items-center gap-1 transition-colors cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5 text-[#8A244B]" />
+                  <span>Add Task</span>
+                </button>
+              </div>
 
-      {/* Task List / Habit List / Goal List */}
-      {type === 'project-cost' && (
-        <div className="p-4 bg-white card-dev27 space-y-2">
-          <span className="text-xs font-bold text-slate-800 block pb-2 border-b border-slate-100">
-            Work Breakdown Structure ({tasks.length} tasks)
-          </span>
+              <div className="space-y-3">
+                {tasks.map((t) => (
+                  <div key={t.id} className="p-3 bg-slate-50 border border-slate-200 rounded-[4px] space-y-2 text-xs">
+                    <div className="flex items-center justify-between gap-2">
+                      <input
+                        type="text"
+                        value={t.name}
+                        onChange={(e) => setTasks(tasks.map(item => item.id === t.id ? { ...item, name: e.target.value } : item))}
+                        className="flex-1 p-1.5 border border-slate-300 rounded-[4px] bg-white font-bold text-slate-900 text-xs"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setTasks(tasks.filter(item => item.id !== t.id))}
+                        className="p-1 text-slate-400 hover:text-red-700 cursor-pointer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
 
-          <div className="space-y-2">
-            {tasks.map((t) => (
-              <div key={t.id} className="p-2.5 bg-slate-50 border border-slate-200 rounded-[4px] grid grid-cols-1 sm:grid-cols-6 gap-2 text-xs items-center">
-                <input
-                  type="text"
-                  value={t.name}
-                  onChange={(e) => setTasks(tasks.map(item => item.id === t.id ? { ...item, name: e.target.value } : item))}
-                  className="sm:col-span-2 p-1.5 border border-slate-300 rounded bg-white text-xs font-medium"
-                />
+                    <div className="grid grid-cols-3 gap-2">
+                      <div>
+                        <span className="text-[10px] text-slate-500 font-bold uppercase block mb-0.5">Hours:</span>
+                        <input
+                          type="number"
+                          value={t.hours}
+                          onChange={(e) => setTasks(tasks.map(item => item.id === t.id ? { ...item, hours: Number(e.target.value) } : item))}
+                          className="w-full p-1.5 border border-slate-300 rounded-[4px] bg-white text-center font-mono font-bold"
+                        />
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-slate-500 font-bold uppercase block mb-0.5">Rate ($/hr):</span>
+                        <input
+                          type="number"
+                          value={t.laborRate}
+                          onChange={(e) => setTasks(tasks.map(item => item.id === t.id ? { ...item, laborRate: Number(e.target.value) } : item))}
+                          className="w-full p-1.5 border border-slate-300 rounded-[4px] bg-white text-center font-mono font-bold"
+                        />
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-slate-500 font-bold uppercase block mb-0.5">Materials ($):</span>
+                        <input
+                          type="number"
+                          value={t.materialsCost}
+                          onChange={(e) => setTasks(tasks.map(item => item.id === t.id ? { ...item, materialsCost: Number(e.target.value) } : item))}
+                          className="w-full p-1.5 border border-slate-300 rounded-[4px] bg-white text-center font-mono font-bold"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Buffer & Tax Controls */}
+              <div className="grid grid-cols-2 gap-4 pt-3 border-t border-slate-100 text-xs">
                 <div>
-                  <span className="text-[10px] text-slate-400 block">Hours:</span>
+                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-1">
+                    Contingency Buffer (%)
+                  </label>
                   <input
                     type="number"
-                    value={t.hours}
-                    onChange={(e) => setTasks(tasks.map(item => item.id === t.id ? { ...item, hours: Number(e.target.value) } : item))}
-                    className="p-1 border border-slate-300 rounded bg-white text-xs text-center w-full"
+                    min={0}
+                    max={50}
+                    value={contingencyPct}
+                    onChange={(e) => setContingencyPct(Number(e.target.value))}
+                    className="w-full p-2 border border-slate-300 rounded-[4px] bg-slate-50 font-mono text-center font-bold"
                   />
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-400 block">Rate ($/hr):</span>
+                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-1">
+                    Project Tax / Fee (%)
+                  </label>
                   <input
                     type="number"
-                    value={t.laborRate}
-                    onChange={(e) => setTasks(tasks.map(item => item.id === t.id ? { ...item, laborRate: Number(e.target.value) } : item))}
-                    className="p-1 border border-slate-300 rounded bg-white text-xs text-center w-full font-mono"
+                    step="0.5"
+                    value={projectTaxPct}
+                    onChange={(e) => setProjectTaxPct(Number(e.target.value))}
+                    className="w-full p-2 border border-slate-300 rounded-[4px] bg-slate-50 font-mono text-center font-bold"
                   />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 block">Materials ($):</span>
-                  <input
-                    type="number"
-                    value={t.materialsCost}
-                    onChange={(e) => setTasks(tasks.map(item => item.id === t.id ? { ...item, materialsCost: Number(e.target.value) } : item))}
-                    className="p-1 border border-slate-300 rounded bg-white text-xs text-center w-full font-mono"
-                  />
-                </div>
-                <div className="flex items-center justify-between font-mono text-right font-bold text-[#8A244B]">
-                  <span>${((t.hours * t.laborRate * t.workers) + t.materialsCost).toLocaleString()}</span>
-                  <button
-                    onClick={() => setTasks(tasks.filter(item => item.id !== t.id))}
-                    className="p-1 text-slate-400 hover:text-red-700"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
                 </div>
               </div>
-            ))}
+            </div>
+          </div>
+
+          {/* Right Column: Output Layout with Easy-to-Read Highlights */}
+          <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-4">
+            <div className="p-6 bg-white card-dev27 shadow-xl rounded-[4px] border border-slate-200/90 relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#8A244B]" />
+              <span className="text-xs text-slate-500 font-bold uppercase tracking-wider block mb-1">
+                Total Estimated Project Budget
+              </span>
+              <div className="flex items-baseline gap-2 mb-4">
+                <span className="font-mono text-3xl sm:text-4xl font-extrabold text-[#2E7D32]">
+                  ${totalProjectCost.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                </span>
+                <span className="text-xs text-slate-500 font-bold">USD</span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2.5 pt-3 border-t border-slate-100">
+                <div className="p-3 bg-[#F2EFE7] rounded-[4px]">
+                  <span className="text-[11px] font-bold text-slate-600 uppercase block mb-0.5">Total Labor</span>
+                  <span className="font-mono text-lg font-extrabold text-slate-900">${totalLaborCost.toLocaleString()}</span>
+                  <span className="text-[10px] text-slate-400 block">{totalHours} total hours</span>
+                </div>
+                <div className="p-3 bg-[#F2EFE7] rounded-[4px]">
+                  <span className="text-[11px] font-bold text-slate-600 uppercase block mb-0.5">Total Materials</span>
+                  <span className="font-mono text-lg font-extrabold text-slate-900">${totalMaterialsCost.toLocaleString()}</span>
+                </div>
+                <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-[4px]">
+                  <span className="text-[11px] font-bold text-slate-500 uppercase block mb-0.5">Contingency ({contingencyPct}%)</span>
+                  <span className="font-mono text-base font-bold text-[#D84315]">+${contingencyAmount.toFixed(0)}</span>
+                </div>
+                <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-[4px]">
+                  <span className="text-[11px] font-bold text-slate-500 uppercase block mb-0.5">Tax ({projectTaxPct}%)</span>
+                  <span className="font-mono text-base font-bold text-slate-800">+${taxAmount.toFixed(0)}</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
 
       {type === 'habit-tracker' && (
-        <div className="space-y-3">
-          {habits.map((h) => {
-            const isDoneToday = h.completedDates.includes(todayStr);
-            return (
-              <div key={h.id} className="p-3 bg-white card-dev27 flex items-center justify-between gap-3 text-xs">
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => toggleHabitToday(h.id)}
-                    className={`w-6 h-6 rounded-[4px] flex items-center justify-center transition-colors border ${
-                      isDoneToday ? 'bg-[#2E7D32] text-white border-[#2E7D32]' : 'border-slate-300 hover:bg-slate-100'
-                    }`}
-                  >
-                    {isDoneToday && <Check className="w-4 h-4" />}
-                  </button>
-                  <div>
-                    <span className="font-bold text-sm text-slate-900 block">{h.name}</span>
-                    <span className="text-slate-500 text-[11px]">Target: {h.targetDaysPerWeek} days/wk</span>
-                  </div>
-                </div>
+        <div className="p-5 bg-white card-dev27 shadow-md rounded-[4px] space-y-4">
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              value={newHabitName}
+              onChange={(e) => setNewHabitName(e.target.value)}
+              placeholder="Enter new habit (e.g. Daily LeetCode, Morning Workout)..."
+              className="flex-1 p-2.5 border border-slate-300 rounded-[4px] text-sm bg-slate-50 focus:bg-white focus:border-[#8A244B]"
+              onKeyDown={(e) => e.key === 'Enter' && addHabit()}
+            />
+            <button
+              onClick={addHabit}
+              className="px-4 py-2.5 text-xs font-bold bg-[#8A244B] hover:bg-[#721C3D] text-white rounded-[4px] flex items-center gap-1.5 cursor-pointer"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Add Habit</span>
+            </button>
+          </div>
 
-                <div className="flex items-center gap-4">
-                  <div className="text-right">
-                    <span className="text-[11px] text-slate-400 block">Current Streak</span>
-                    <span className="font-mono font-bold text-slate-800 text-sm">🔥 {h.currentStreak} days</span>
+          <div className="space-y-3 pt-2">
+            {habits.map((h) => {
+              const isDoneToday = h.completedDates.includes(todayStr);
+              return (
+                <div key={h.id} className="p-4 bg-slate-50 border border-slate-200 rounded-[4px] flex items-center justify-between gap-3 text-xs">
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => toggleHabitToday(h.id)}
+                      className={`w-7 h-7 rounded-[4px] flex items-center justify-center transition-colors border cursor-pointer ${
+                        isDoneToday ? 'bg-[#2E7D32] text-white border-[#2E7D32]' : 'border-slate-300 bg-white hover:bg-slate-100'
+                      }`}
+                    >
+                      {isDoneToday && <Check className="w-4 h-4" />}
+                    </button>
+                    <div>
+                      <span className="font-bold text-base text-slate-900 block">{h.name}</span>
+                      <span className="text-slate-500 text-xs">Target: {h.targetDaysPerWeek} days/week</span>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <span className="text-[11px] text-slate-400 block">Best Streak</span>
-                    <span className="font-mono font-bold text-[#8A244B] text-sm">🏆 {h.bestStreak} days</span>
+
+                  <div className="flex items-center gap-5">
+                    <div className="text-right">
+                      <span className="text-[11px] text-slate-400 uppercase font-bold block">Streak</span>
+                      <span className="font-mono font-bold text-slate-800 text-sm">🔥 {h.currentStreak} days</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-[11px] text-slate-400 uppercase font-bold block">Best</span>
+                      <span className="font-mono font-bold text-[#8A244B] text-sm">🏆 {h.bestStreak} days</span>
+                    </div>
+                    <button
+                      onClick={() => setHabits(habits.filter(item => item.id !== h.id))}
+                      className="p-1 text-slate-400 hover:text-red-700 cursor-pointer"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
-                  <button
-                    onClick={() => setHabits(habits.filter(item => item.id !== h.id))}
-                    className="p-1 text-slate-400 hover:text-red-700"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       )}
 
       {type === 'goal-tracker' && (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {goals.map((g) => {
             const completedCount = g.milestones.filter(m => m.done).length;
             const computedPct = g.milestones.length ? Math.round((completedCount / g.milestones.length) * 100) : g.progressPct;
             const isOverdue = new Date(g.targetDate).getTime() < Date.now();
 
             return (
-              <div key={g.id} className="p-4 bg-white card-dev27 space-y-3">
+              <div key={g.id} className="p-5 bg-white card-dev27 shadow-md rounded-[4px] space-y-3">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <span className="text-[11px] text-[#8A244B] font-bold uppercase tracking-wider block">{g.category}</span>
-                    <h4 className="text-sm font-bold text-slate-900">{g.title}</h4>
-                    <span className={`text-[11px] ${isOverdue ? 'text-red-600 font-bold' : 'text-slate-500'}`}>
+                    <h4 className="text-base font-bold text-slate-900">{g.title}</h4>
+                    <span className={`text-xs ${isOverdue ? 'text-red-600 font-bold' : 'text-slate-500'}`}>
                       Target Date: {g.targetDate} {isOverdue && '(Overdue)'}
                     </span>
                   </div>
 
                   <div className="text-right">
-                    <span className="font-mono text-lg font-bold text-[#8A244B]">{computedPct}%</span>
-                    <span className="text-[11px] text-slate-400 block">{completedCount} of {g.milestones.length} milestones</span>
+                    <span className="font-mono text-2xl font-extrabold text-[#8A244B]">{computedPct}%</span>
+                    <span className="text-xs text-slate-500 block">{completedCount} of {g.milestones.length} milestones</span>
                   </div>
                 </div>
 
-                {/* Progress Bar */}
-                <div className="w-full bg-slate-100 h-2 rounded-[2px] overflow-hidden">
+                <div className="w-full bg-slate-100 h-2.5 rounded-[2px] overflow-hidden">
                   <div className="bg-[#8A244B] h-full transition-all duration-300" style={{ width: `${computedPct}%` }} />
                 </div>
 
-                {/* Milestones list */}
-                <div className="space-y-1.5 pt-1">
+                <div className="space-y-2 pt-2">
                   {g.milestones.map((m, mIdx) => (
-                    <label key={mIdx} className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer">
+                    <label key={mIdx} className="flex items-center gap-2.5 text-xs text-slate-700 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={m.done}
@@ -421,9 +443,9 @@ export const ProjectAndHabitTrackers: React.FC<Props> = ({ type }) => {
                           updated[mIdx].done = e.target.checked;
                           setGoals(goals.map(item => item.id === g.id ? { ...item, milestones: updated } : item));
                         }}
-                        className="rounded-[2px] text-[#8A244B]"
+                        className="rounded-[2px] text-[#8A244B] w-4 h-4"
                       />
-                      <span className={m.done ? 'line-through text-slate-400' : ''}>{m.title}</span>
+                      <span className={m.done ? 'line-through text-slate-400 font-normal' : 'font-medium'}>{m.title}</span>
                     </label>
                   ))}
                 </div>
