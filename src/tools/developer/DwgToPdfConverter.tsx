@@ -222,19 +222,42 @@ export const DwgToPdfConverter: React.FC = () => {
     <div className="space-y-4">
       {/* Upload Zone */}
       <div className="p-4 bg-white card-dev27 flex flex-wrap items-center justify-between gap-3">
-        <label className="flex items-center gap-2 cursor-pointer bg-[#F2EFE7] hover:bg-slate-200 text-[#111F35] px-3 py-2 rounded-[4px] text-xs font-semibold">
-          <Upload className="w-4 h-4 text-[#8A244B]" />
-          <span>Upload DWG / DXF File</span>
-          <input
-            type="file"
-            accept=".dwg,.dxf"
-            className="hidden"
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              if (f) handleFileUpload(f);
+        <div className="flex items-center gap-2">
+          <label className="flex items-center gap-2 cursor-pointer bg-[#F2EFE7] hover:bg-slate-200 text-[#111F35] px-3 py-2 rounded-[4px] text-xs font-semibold">
+            <Upload className="w-4 h-4 text-[#8A244B]" />
+            <span>Upload DWG / DXF File</span>
+            <input
+              type="file"
+              accept=".dwg,.dxf"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) handleFileUpload(f);
+              }}
+            />
+          </label>
+
+          <button
+            type="button"
+            onClick={() => {
+              setEntities(sampleEntities);
+              const layers = Array.from(new Set(sampleEntities.map(e => e.layer)));
+              const layerMap: Record<string, boolean> = {};
+              layers.forEach(l => { layerMap[l] = true; });
+              setActiveLayers(layerMap);
+              setFileInfo({
+                name: 'Sample_FloorPlan_ModelSpace.dwg',
+                version: 'AutoCAD 2018 (AC1032)',
+                size: 148200,
+                entitiesCount: sampleEntities.length,
+                layers,
+              });
             }}
-          />
-        </label>
+            className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-[4px] text-xs font-medium cursor-pointer"
+          >
+            Load Sample Architectural Plan
+          </button>
+        </div>
 
         {fileInfo && (
           <div className="text-xs text-slate-600 flex flex-wrap items-center gap-3">

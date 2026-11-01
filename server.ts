@@ -10,6 +10,12 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
 app.use(express.json({ limit: '10mb' }));
 
+// Server-side Gemini API status check
+app.get('/api/gemini/status', (req, res) => {
+  const hasKey = Boolean(process.env.GEMINI_API_KEY || process.env.API_KEY);
+  res.json({ available: hasKey });
+});
+
 // Server-side Gemini API route
 app.post('/api/gemini/generate', async (req, res) => {
   try {
@@ -19,7 +25,7 @@ app.post('/api/gemini/generate', async (req, res) => {
       return res.status(400).json({ error: 'Prompt is required' });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
     if (!apiKey) {
       return res.status(400).json({ error: 'GEMINI_API_KEY environment variable is not configured.' });
     }

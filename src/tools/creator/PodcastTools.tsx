@@ -171,7 +171,7 @@ Return JSON array in format:
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
                 placeholder="e.g. AI & Design, Gaming, Personal Finance"
-                className="w-full p-2.5 border border-slate-300 rounded-[4px] bg-slate-50 focus:bg-white focus:border-[#8A244B] text-sm font-bold"
+                className="w-full p-2.5 border border-[#111F35] focus:border-[#8A244B] focus:ring-1 focus:ring-[#8A244B] rounded-[4px] bg-slate-50 focus:bg-white text-sm font-bold focus:outline-none"
               />
             </div>
 
@@ -182,7 +182,7 @@ Return JSON array in format:
                 value={keywords}
                 onChange={(e) => setKeywords(e.target.value)}
                 placeholder="e.g. future, tech, creative, code"
-                className="w-full p-2.5 border border-slate-300 rounded-[4px] bg-slate-50 focus:bg-white focus:border-[#8A244B] text-sm"
+                className="w-full p-2.5 border border-[#111F35] focus:border-[#8A244B] focus:ring-1 focus:ring-[#8A244B] rounded-[4px] bg-slate-50 focus:bg-white text-sm focus:outline-none"
               />
             </div>
 
@@ -192,7 +192,7 @@ Return JSON array in format:
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full p-2.5 border border-slate-300 rounded-[4px] bg-slate-50 text-xs"
+                  className="w-full p-2.5 border border-[#111F35] focus:border-[#8A244B] focus:ring-1 focus:ring-[#8A244B] rounded-[4px] bg-slate-50 text-xs focus:outline-none"
                 >
                   <option value="Technology">Technology &amp; Software</option>
                   <option value="Business">Business &amp; Finance</option>
@@ -208,7 +208,7 @@ Return JSON array in format:
                 <select
                   value={nameLength}
                   onChange={(e) => setNameLength(e.target.value as any)}
-                  className="w-full p-2.5 border border-slate-300 rounded-[4px] bg-slate-50 text-xs"
+                  className="w-full p-2.5 border border-[#111F35] focus:border-[#8A244B] focus:ring-1 focus:ring-[#8A244B] rounded-[4px] bg-slate-50 text-xs focus:outline-none"
                 >
                   <option value="any">Any Length</option>
                   <option value="short">Short (1-3 words)</option>
@@ -224,7 +224,7 @@ Return JSON array in format:
                 value={excludedWords}
                 onChange={(e) => setExcludedWords(e.target.value)}
                 placeholder="e.g. daily, talk"
-                className="w-full p-2 border border-slate-300 rounded-[4px] bg-slate-50 text-xs"
+                className="w-full p-2 border border-[#111F35] focus:border-[#8A244B] focus:ring-1 focus:ring-[#8A244B] rounded-[4px] bg-slate-50 text-xs focus:outline-none"
               />
             </div>
 

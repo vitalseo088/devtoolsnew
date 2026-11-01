@@ -381,19 +381,29 @@ export const Mp3ToMidiConverter: React.FC = () => {
       {/* Upload & Audio Playback Bar */}
       <div className="p-4 bg-white card-dev27 space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <label className="flex items-center gap-2 cursor-pointer bg-[#F2EFE7] hover:bg-slate-200 text-[#111F35] px-3 py-2 rounded-[4px] text-xs font-semibold">
-            <Upload className="w-4 h-4 text-[#8A244B]" />
-            <span>Upload Audio (MP3 / WAV)</span>
-            <input
-              type="file"
-              accept="audio/*"
-              className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) handleAudioUpload(f);
-              }}
-            />
-          </label>
+          <div className="flex items-center gap-2">
+            <label className="flex items-center gap-2 cursor-pointer bg-[#F2EFE7] hover:bg-slate-200 text-[#111F35] px-3 py-2 rounded-[4px] text-xs font-semibold">
+              <Upload className="w-4 h-4 text-[#8A244B]" />
+              <span>Upload Audio (MP3 / WAV)</span>
+              <input
+                type="file"
+                accept="audio/*"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) handleAudioUpload(f);
+                }}
+              />
+            </label>
+
+            <button
+              type="button"
+              onClick={loadDefaultMelody}
+              className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-[4px] text-xs font-medium cursor-pointer"
+            >
+              Load Demo Melody
+            </button>
+          </div>
 
           <div className="flex items-center gap-3 text-xs">
             {audioUrl && (

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Copy, RefreshCw, Bookmark, Check, ShieldCheck, Tag, Music, Swords, Sparkles } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Copy, RefreshCw, Bookmark, Check, ShieldCheck, Tag, Music, Swords, Sparkles, Bot, Loader2 } from 'lucide-react';
 
 interface GeneratorProps {
   type: 'tiktok' | 'instagram' | 'youtube' | 'band' | 'clan' | 'roblox';
@@ -17,26 +17,47 @@ export const SocialUsernameGenerator: React.FC<GeneratorProps> = ({ type }) => {
   const [results, setResults] = useState<{ handle: string; tag?: string; note?: string }[]>([]);
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [isAiLoading, setIsAiLoading] = useState<boolean>(false);
 
   const generateUsernames = () => {
-    const kw = (keyword || 'Core').trim().replace(/\s+/g, '');
+    const rawKw = keyword.trim() || 'Core';
+    const kw = rawKw.replace(/\s+/g, '');
     const suggestions: { handle: string; tag?: string; note?: string }[] = [];
 
     const prefixes = ['The', 'Real', 'Just', 'Its', 'iam', 'official', 'hey'];
-    const aestheticWords = ['Nova', 'Glow', 'Luna', 'Echo', 'Drift', 'Aura', 'Sol', 'Vivid', 'Bloom'];
-    const gamingWords = ['Pixel', 'Shadow', 'Frost', 'Vortex', 'Blitz', 'Rogue', 'Apex', 'Titan'];
-    const suffixes = ['HQ', 'Lab', 'Club', 'Zone', 'Daily', 'TV', 'Feed', 'World'];
+    const aestheticWords = ['Nova', 'Glow', 'Luna', 'Echo', 'Drift', 'Aura', 'Sol', 'Vivid', 'Bloom', 'Pulse', 'Wave', 'Oasis'];
+    const gamingWords = ['Pixel', 'Shadow', 'Frost', 'Vortex', 'Blitz', 'Rogue', 'Apex', 'Titan', 'Ghost', 'Strike', 'Havoc', 'Zero'];
+    const creativeWords = ['Studio', 'Craft', 'Lab', 'Verse', 'Forge', 'Canvas', 'Chronicle', 'Spark', 'Atelier', 'Sphere'];
+    const professionalWords = ['HQ', 'Media', 'Insights', 'Group', 'Official', 'Network', 'Ventures', 'Digital', 'Direct'];
+    const suffixes = ['HQ', 'Lab', 'Club', 'Zone', 'Daily', 'TV', 'Feed', 'World', 'Space'];
 
     if (type === 'roblox') {
       // Roblox Rules: 3 to 20 chars, only letters, numbers, and at most one underscore. Cannot start or end with underscore.
-      const robloxBases = [kw, `${kw}Hero`, `Super${kw}`, `${kw}Blox`, `${kw}Pro`, `Real${kw}`, `${kw}Gamer`];
+      const robloxBases = [
+        kw,
+        `${kw}Hero`,
+        `Super${kw}`,
+        `${kw}Blox`,
+        `${kw}Pro`,
+        `Real${kw}`,
+        `${kw}Gamer`,
+        `${kw}Master`,
+        `Captain${kw}`,
+        `${kw}Legend`,
+        `Epic${kw}`,
+        `${kw}Playz`
+      ];
+
       robloxBases.forEach(base => {
         let clean = base.replace(/[^a-zA-Z0-9]/g, '');
+        if (prefix) clean = `${prefix.replace(/[^a-zA-Z0-9]/g, '')}${clean}`;
+        if (suffix) clean = `${clean}${suffix.replace(/[^a-zA-Z0-9]/g, '')}`;
         if (clean.length < 3) clean = `${clean}123`;
         if (includeNumbers) clean = `${clean}${Math.floor(Math.random() * 89) + 10}`;
         if (clean.length > maxLen) clean = clean.slice(0, maxLen);
         suggestions.push({ handle: clean, note: 'Roblox TOS compliant' });
       });
+
       // Add underscore variation
       if (includeSymbols) {
         let uName = `${kw}_Blox`.replace(/[^a-zA-Z0-9_]/g, '');
@@ -45,30 +66,40 @@ export const SocialUsernameGenerator: React.FC<GeneratorProps> = ({ type }) => {
         }
       }
     } else if (type === 'clan') {
-      const clanAdjectives = ['Phantom', 'Iron', 'Apex', 'Vanguard', 'Silent', 'Fatal', 'Immortal', 'Omega'];
+      const clanAdjectives = ['Phantom', 'Iron', 'Apex', 'Vanguard', 'Silent', 'Fatal', 'Immortal', 'Omega', 'Valkyrie', 'Eclipse', 'Nemesis', 'Reign'];
       clanAdjectives.forEach(adj => {
-        const name = `${adj} ${kw}`;
-        const tag = `[${adj[0]}${kw.slice(0, 2).toUpperCase()}]`;
-        suggestions.push({ handle: name, tag, note: 'Squad Name & Tag' });
+        let baseName = `${adj} ${rawKw}`;
+        if (prefix) baseName = `${prefix} ${baseName}`;
+        if (suffix) baseName = `${baseName} ${suffix}`;
+        const tag = `[${adj[0]}${rawKw.slice(0, 2).toUpperCase()}]`;
+        suggestions.push({ handle: baseName, tag, note: 'Squad Name & Tag' });
       });
     } else if (type === 'band') {
       const bandFormats = [
-        `The ${kw}s`,
-        `${kw} and the Echoes`,
-        `Velvet ${kw}`,
-        `Electric ${kw}`,
-        `${kw} Theory`,
-        `Midnight ${kw}`,
-        `Broken ${kw}`,
-        `Atomic ${kw}`,
+        `The ${rawKw}s`,
+        `${rawKw} and the Echoes`,
+        `Velvet ${rawKw}`,
+        `Electric ${rawKw}`,
+        `${rawKw} Theory`,
+        `Midnight ${rawKw}`,
+        `Broken ${rawKw}`,
+        `Atomic ${rawKw}`,
+        `The Neon ${rawKw}`,
+        `${rawKw} Syndicate`,
+        `Lunar ${rawKw}`,
+        `${rawKw} Sound System`
       ];
       bandFormats.forEach(b => {
         suggestions.push({ handle: b, note: 'Band & Music Project' });
       });
     } else {
       // General TikTok / Instagram / YouTube
-      const list = style === 'Gaming' ? gamingWords : aestheticWords;
-      list.forEach(word => {
+      let wordPool = aestheticWords;
+      if (style === 'Gaming') wordPool = gamingWords;
+      else if (style === 'Creative') wordPool = creativeWords;
+      else if (style === 'Professional') wordPool = professionalWords;
+
+      wordPool.forEach(word => {
         let candidate = '';
         if (prefix) candidate += prefix;
         candidate += `${kw}${word}`;
@@ -80,7 +111,7 @@ export const SocialUsernameGenerator: React.FC<GeneratorProps> = ({ type }) => {
         }
       });
 
-      prefixes.slice(0, 4).forEach(p => {
+      prefixes.slice(0, 5).forEach(p => {
         let candidate = `${p}_${kw}`.toLowerCase();
         if (includeNumbers) candidate += Math.floor(Math.random() * 9) + 1;
         if (candidate.length <= maxLen) {
@@ -92,12 +123,60 @@ export const SocialUsernameGenerator: React.FC<GeneratorProps> = ({ type }) => {
     // Deduplicate
     const unique = new Map();
     suggestions.forEach(s => unique.set(s.handle, s));
-    setResults(Array.from(unique.values()).slice(0, 16));
+    setResults(Array.from(unique.values()).slice(0, 18));
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     generateUsernames();
   }, [type, style, includeNumbers, includeSymbols, maxLen]);
+
+  const generateWithAi = async () => {
+    setIsAiLoading(true);
+    try {
+      const prompt = `Generate 14 distinctive, highly brandable ${type.toUpperCase()} usernames / handles.
+Seed Keyword: "${keyword}"
+Niche/Topic: "${niche}"
+Style: "${style}"
+Custom Prefix: "${prefix}"
+Custom Suffix: "${suffix}"
+Include Numbers: ${includeNumbers}
+Include Symbols (underscores/dots): ${includeSymbols}
+Max Character Length: ${maxLen}
+
+Platform Requirements for ${type.toUpperCase()}:
+${type === 'roblox' ? '- MUST be 3 to 20 chars, only letters/numbers and at most one underscore. Cannot start or end with underscore.' : ''}
+${type === 'youtube' ? '- YouTube channel name (spaces allowed, no trailing punctuation).' : ''}
+${type === 'clan' ? '- Gaming Clan name with a 3-4 letter bracketed tag like [TAG].' : ''}
+${type === 'band' ? '- Musical band or artist stage name.' : ''}
+
+Return JSON array in format:
+[
+  {"handle": "HandleName", "tag": "[OPT]", "note": "Style explanation"}
+]`;
+
+      const res = await fetch('/api/gemini/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt, systemInstruction: 'Respond only with a valid JSON array.' }),
+      });
+      const data = await res.json();
+      if (data.text) {
+        const cleanJson = data.text.replace(/```json/g, '').replace(/```/g, '').trim();
+        const parsed = JSON.parse(cleanJson);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setResults(parsed);
+        } else {
+          generateUsernames();
+        }
+      } else {
+        generateUsernames();
+      }
+    } catch (e) {
+      generateUsernames();
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
 
   const copyToClipboard = (text: string, key: string) => {
     navigator.clipboard.writeText(text);
@@ -117,7 +196,7 @@ export const SocialUsernameGenerator: React.FC<GeneratorProps> = ({ type }) => {
   return (
     <div className="space-y-4">
       <div className="p-4 bg-white card-dev27 space-y-3">
-        <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+        <div className="flex items-center justify-between pb-2 border-b border-slate-100 flex-wrap gap-2">
           <span className="text-xs font-bold text-slate-800 uppercase tracking-wide">
             {titles[type] || 'Username Generator'} Parameters
           </span>
@@ -136,6 +215,7 @@ export const SocialUsernameGenerator: React.FC<GeneratorProps> = ({ type }) => {
               type="text"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
+              placeholder="e.g. Vibe, Apex, Spark"
               className="w-full p-2 border border-slate-300 rounded-[4px] bg-white focus:border-[#8A244B]"
             />
           </div>
@@ -147,10 +227,10 @@ export const SocialUsernameGenerator: React.FC<GeneratorProps> = ({ type }) => {
               onChange={(e) => setStyle(e.target.value)}
               className="w-full p-2 border border-slate-300 rounded-[4px] bg-white"
             >
-              <option value="Aesthetic">Aesthetic & Clean</option>
-              <option value="Gaming">Gaming & Competitive</option>
-              <option value="Creative">Creative & Punchy</option>
-              <option value="Professional">Professional & Brand</option>
+              <option value="Aesthetic">Aesthetic &amp; Clean</option>
+              <option value="Gaming">Gaming &amp; Competitive</option>
+              <option value="Creative">Creative &amp; Punchy</option>
+              <option value="Professional">Professional &amp; Brand</option>
             </select>
           </div>
 
@@ -160,7 +240,18 @@ export const SocialUsernameGenerator: React.FC<GeneratorProps> = ({ type }) => {
               type="text"
               value={prefix}
               onChange={(e) => setPrefix(e.target.value)}
-              placeholder="e.g. the, real"
+              placeholder="e.g. the, real, iam"
+              className="w-full p-2 border border-slate-300 rounded-[4px] bg-white"
+            />
+          </div>
+
+          <div>
+            <label className="text-slate-600 font-medium block mb-1">Custom Suffix (optional):</label>
+            <input
+              type="text"
+              value={suffix}
+              onChange={(e) => setSuffix(e.target.value)}
+              placeholder="e.g. HQ, Club, TV"
               className="w-full p-2 border border-slate-300 rounded-[4px] bg-white"
             />
           </div>
@@ -176,11 +267,9 @@ export const SocialUsernameGenerator: React.FC<GeneratorProps> = ({ type }) => {
               className="w-full p-2 border border-slate-300 rounded-[4px] bg-white text-center"
             />
           </div>
-        </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-          <div className="flex items-center gap-3 text-xs">
-            <label className="flex items-center gap-1 cursor-pointer">
+          <div className="md:col-span-3 flex flex-wrap items-center gap-4 pt-4">
+            <label className="flex items-center gap-1.5 cursor-pointer">
               <input
                 type="checkbox"
                 checked={includeNumbers}
@@ -191,7 +280,7 @@ export const SocialUsernameGenerator: React.FC<GeneratorProps> = ({ type }) => {
             </label>
 
             {type !== 'youtube' && type !== 'roblox' && (
-              <label className="flex items-center gap-1 cursor-pointer">
+              <label className="flex items-center gap-1.5 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={includeSymbols}
@@ -202,43 +291,61 @@ export const SocialUsernameGenerator: React.FC<GeneratorProps> = ({ type }) => {
               </label>
             )}
           </div>
+        </div>
 
-          <button
-            onClick={generateUsernames}
-            className="px-4 py-2 text-xs font-semibold bg-[#8A244B] hover:bg-[#721C3D] text-white rounded-[4px] flex items-center gap-1.5"
-          >
-            <RefreshCw className="w-3.5 h-3.5" />
-            Generate New Handles
-          </button>
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={generateUsernames}
+              className="px-4 py-2 text-xs font-semibold bg-[#8A244B] hover:bg-[#721C3D] text-white rounded-[4px] flex items-center gap-1.5 cursor-pointer"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>Generate Handles</span>
+            </button>
+
+            <button
+              onClick={generateWithAi}
+              disabled={isAiLoading}
+              className="px-4 py-2 text-xs font-semibold bg-[#111F35] hover:bg-slate-800 text-white rounded-[4px] flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+            >
+              {isAiLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Bot className="w-3.5 h-3.5" />}
+              <span>{isAiLoading ? 'AI Generating...' : 'AI Generate (Gemini)'}</span>
+            </button>
+          </div>
+
+          <span className="text-xs text-slate-500 font-mono">
+            {results.length} handles ready
+          </span>
         </div>
       </div>
 
       {/* Results Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
         {results.map((r, idx) => (
-          <div key={idx} className="p-3 bg-white card-dev27 flex items-center justify-between gap-2">
+          <div key={idx} className="p-3 bg-white card-dev27 flex items-center justify-between gap-2 border border-slate-200/90 rounded-[4px]">
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="font-mono font-bold text-xs sm:text-sm text-slate-900">{r.handle}</span>
                 {r.tag && (
-                  <span className="font-mono text-xs px-1.5 py-0.2 bg-[#F2EFE7] text-[#8A244B] rounded font-bold">
+                  <span className="font-mono text-xs px-1.5 py-0.5 bg-[#F2EFE7] text-[#8A244B] rounded font-bold">
                     {r.tag}
                   </span>
                 )}
               </div>
-              <div className="text-[11px] text-slate-400">{r.note} · {r.handle.length} chars</div>
+              <div className="text-[11px] text-slate-500">{r.note} · {r.handle.length} chars</div>
             </div>
 
             <div className="flex items-center gap-1">
               <button
                 onClick={() => setFavorites({ ...favorites, [r.handle]: !favorites[r.handle] })}
-                className={`p-1 rounded-[4px] ${favorites[r.handle] ? 'text-[#8A244B]' : 'text-slate-300 hover:text-slate-500'}`}
+                className={`p-1 rounded-[4px] cursor-pointer ${favorites[r.handle] ? 'text-[#8A244B]' : 'text-slate-300 hover:text-slate-500'}`}
               >
                 <Bookmark className="w-3.5 h-3.5 fill-current" />
               </button>
               <button
                 onClick={() => copyToClipboard(r.handle, `h-${idx}`)}
-                className="p-1 text-slate-500 hover:text-[#8A244B]"
+                className="p-1 text-slate-500 hover:text-[#8A244B] cursor-pointer"
+                title="Copy Handle"
               >
                 {copiedKey === `h-${idx}` ? <Check className="w-3.5 h-3.5 text-green-700" /> : <Copy className="w-3.5 h-3.5" />}
               </button>

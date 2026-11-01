@@ -304,7 +304,7 @@ Return a valid JSON array in format:
             <select
               value={gender}
               onChange={(e) => setGender(e.target.value as any)}
-              className="w-full p-2 border border-slate-300 rounded-[4px] bg-white text-xs font-medium"
+              className="w-full p-2 border border-[#111F35] focus:border-[#8A244B] focus:ring-1 focus:ring-[#8A244B] rounded-[4px] bg-white text-xs font-medium focus:outline-none"
             >
               <option value="any">Any Gender / Neutral</option>
               <option value="male">Male (Boy)</option>
@@ -320,7 +320,7 @@ Return a valid JSON array in format:
               value={breed}
               onChange={(e) => setBreed(e.target.value)}
               placeholder="e.g. Golden Retriever, Siamese"
-              className="w-full p-2 border border-slate-300 rounded-[4px] bg-white text-xs"
+              className="w-full p-2 border border-[#111F35] focus:border-[#8A244B] focus:ring-1 focus:ring-[#8A244B] rounded-[4px] bg-white text-xs focus:outline-none"
             />
           </div>
 
@@ -329,7 +329,7 @@ Return a valid JSON array in format:
             <select
               value={personality}
               onChange={(e) => setPersonality(e.target.value)}
-              className="w-full p-2 border border-slate-300 rounded-[4px] bg-white text-xs"
+              className="w-full p-2 border border-[#111F35] focus:border-[#8A244B] focus:ring-1 focus:ring-[#8A244B] rounded-[4px] bg-white text-xs focus:outline-none"
             >
               <option value="playful">Playful &amp; Energetic</option>
               <option value="calm">Calm &amp; Gentle</option>
@@ -344,7 +344,7 @@ Return a valid JSON array in format:
             <select
               value={firstLetter}
               onChange={(e) => setFirstLetter(e.target.value)}
-              className="w-full p-2 border border-slate-300 rounded-[4px] bg-white text-xs font-mono"
+              className="w-full p-2 border border-[#111F35] focus:border-[#8A244B] focus:ring-1 focus:ring-[#8A244B] rounded-[4px] bg-white text-xs font-mono focus:outline-none"
             >
               <option value="all">Any Letter (A-Z)</option>
               {'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(l => (
@@ -358,7 +358,7 @@ Return a valid JSON array in format:
             <select
               value={namingStyle}
               onChange={(e) => setNamingStyle(e.target.value)}
-              className="w-full p-2 border border-slate-300 rounded-[4px] bg-white text-xs"
+              className="w-full p-2 border border-[#111F35] focus:border-[#8A244B] focus:ring-1 focus:ring-[#8A244B] rounded-[4px] bg-white text-xs focus:outline-none"
             >
               <option value="cute">Cute &amp; Sweet</option>
               <option value="traditional">Traditional Classic</option>
@@ -376,7 +376,7 @@ Return a valid JSON array in format:
               value={keywordInclude}
               onChange={(e) => setKeywordInclude(e.target.value)}
               placeholder="e.g. Star, Sun"
-              className="w-full p-2 border border-slate-300 rounded-[4px] bg-white text-xs"
+              className="w-full p-2 border border-[#111F35] focus:border-[#8A244B] focus:ring-1 focus:ring-[#8A244B] rounded-[4px] bg-white text-xs focus:outline-none"
             />
           </div>
 
@@ -387,7 +387,7 @@ Return a valid JSON array in format:
               value={keywordExclude}
               onChange={(e) => setKeywordExclude(e.target.value)}
               placeholder="e.g. spot, rover"
-              className="w-full p-2 border border-slate-300 rounded-[4px] bg-white text-xs"
+              className="w-full p-2 border border-[#111F35] focus:border-[#8A244B] focus:ring-1 focus:ring-[#8A244B] rounded-[4px] bg-white text-xs focus:outline-none"
             />
           </div>
 
